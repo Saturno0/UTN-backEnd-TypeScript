@@ -1,0 +1,16 @@
+import Navbar from "../components/Navbar";
+import Login from "../components/Login";
+import Footer from "../components/Footer";
+import '../styles/Login.css'
+
+const LoginPage = () => {
+  return (
+    <>
+        <Navbar />
+        <Login />
+        <Footer />
+    </>
+  );
+};
+
+export default LoginPage;

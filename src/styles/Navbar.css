@@ -1,0 +1,114 @@
+@import url('./Index.css');
+
+.navbar {
+  border-bottom: 1px solid black;
+  height: 79.5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  font-family: Arial, sans-serif;
+  background-color: #a89989;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.nav-container,
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.header-inner.flex-row.container {
+  height: 79px;
+}
+
+.left-menu,
+.right-menu {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.right-menu {
+  justify-content: flex-end;
+}
+
+.flex-row {
+  align-items: center;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.header-full-width .container {
+  max-width: 100%;
+}
+
+.container {
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Logo */
+#logo {
+  width: 200px;
+  flex: 1;
+  text-align: center;
+  font-size: 30px;
+}
+
+#logo:hover {
+  scale: 1.05;
+  transition: all 0.15s;
+}
+
+.logo-center .logo {
+  margin: 0 30px;
+  order: 2;
+  text-align: center;
+}
+
+.logo {
+  line-height: 1;
+  text-align: center;
+  font-weight: bold;
+  padding: 25px 25px 20px 25px;
+  margin: 0;
+}
+
+/* Nav Links */
+.nav-links {
+  top: 0;
+  align-items: center;
+  justify-content: center;
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  padding: 0;
+}
+
+.nav-links li {
+  color: black;
+  font-size: 13px;
+  font-weight: 100 !important;
+  cursor: pointer;
+  position: relative;
+}
+
+.nav-links li:hover {
+  cursor: pointer;
+  scale: 1.15;
+  transition: all 0.15s;
+}
+
+

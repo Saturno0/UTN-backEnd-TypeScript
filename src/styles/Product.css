@@ -1,0 +1,206 @@
+@import url('./Index.css');
+
+.product {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px 40px 100px;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+
+.product h1 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.product-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.product-image {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.product-image img {
+    width: 100%;
+    border-radius: 8px;
+}
+
+.product-info {
+    flex: 1;
+    min-width: 300px;
+}
+
+.product-info h2 {
+    margin-top: 0;
+    color: #111;
+}
+
+.product-rating {
+    margin: 10px 0;
+    color: #ffa500;
+    font-weight: bold;
+}
+
+.color-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.color-table th {
+    text-align: left;
+    padding: 10px 5px;
+    border-bottom: 1px solid #ddd;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.color-table td {
+    padding: 10px 5px;
+    border-bottom: 1px solid #ddd;
+    font-size: 14px;
+    color: #666;
+}
+
+.color-table input[type="number"] {
+    width: 50px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+.stock {
+    color: green;
+    font-weight: bold;
+}
+
+.discount {
+    background-color: #ffefc3;
+    padding: 8px 12px;
+    border-left: 4px solid #ffc107;
+    margin: 10px 0;
+    font-weight: bold;
+}
+
+.price {
+    font-size: 1.5rem;
+    color: #e53935;
+    margin: 15px 0;
+}
+
+.specs {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.specs li {
+    padding: 5px 0;
+    border-bottom: 1px solid #ddd;
+}
+
+select {
+    padding: 6px;
+    margin: 10px 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    margin-top: 15px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.add-to-wishlist {
+    background-color: #ff4081;
+}
+
+.add-to-wishlist:hover {
+    background-color: #c60055;
+}
+
+/* Estilos responsive para móviles y tablets */
+@media (max-width: 768px) {
+
+    /* Contenido principal del producto */
+    .product-details {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .product-info {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
+    .product-image {
+        width: 60%;
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .product h1 {
+        font-size: 1.5rem;
+    }
+
+    .product-info h2 {
+        font-size: 1.2rem;
+    }
+
+    button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    /* Footer */
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .footer-section, .contact {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .social-media {
+        justify-content: center;
+    }
+}

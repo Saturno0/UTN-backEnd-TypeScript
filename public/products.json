@@ -1,0 +1,181 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Nombre del Producto 1",
+      "image": "https://cameo-oficial.com.ar/wp-content/uploads/2025/04/54.jpg",
+      "calificacion": 4.0,
+      "opiniones": 23,
+      "description": "Descripción del producto. Perfecto para el uso diario.",
+      "stock": true,
+      "descuento": 20,
+      "precio_actual": 100,
+      "precio_original": 125,
+      "tamaños": ["S", "M", "L", "XL"],
+      "especificaciones": {
+        "material": "Algodón 100%",
+        "peso": "500g",
+        "fabricado_en": "Argentina"
+      },
+      "category" : "buzo",
+      "colores": [
+        { "nombre": "Beige", "cantidad": 0, "stock": 15 },
+        { "nombre": "Blanco", "cantidad": 0, "stock": 15 },
+        { "nombre": "Bordo", "cantidad": 0, "stock": 15 }
+      ],
+      "ingreso": "viejo"
+    },
+    {
+      "id": 2,
+      "name": "Nombre del Producto 2",
+      "image": "https://cameo-oficial.com.ar/wp-content/uploads/2025/04/1-scaled.jpg",
+      "calificacion": 4.0,
+      "opiniones": 23,
+      "description": "Descripción del producto. Perfecto para el uso diario.",
+      "stock": true,
+      "descuento": 20,
+      "precio_actual": 250,
+      "precio_original": 313,
+      "tamaños": ["S", "M", "L", "XL"],
+      "especificaciones": {
+        "material": "Algodón 100%",
+        "peso": "500g",
+        "fabricado_en": "Argentina"
+      },
+      "category" : "buzo",
+      "colores": [
+        { "nombre": "Beige", "cantidad": 0, "stock": 15 },
+        { "nombre": "Blanco", "cantidad": 0, "stock": 15 },
+        { "nombre": "Bordo", "cantidad": 0, "stock": 15 }
+      ],
+      "ingreso": "nuevo"
+    },
+    {
+      "id": 3,
+      "name": "Nombre del Producto 3",
+      "image": "https://cameo-oficial.com.ar/wp-content/uploads/2025/02/CATALOGO-05-3-scaled.jpg",
+      "calificacion": 4.0,
+      "opiniones": 23,
+      "description": "Descripción del producto. Perfecto para el uso diario.",
+      "stock": true,
+      "descuento": 30,
+      "precio_actual": 150,
+      "precio_original": 215,
+      "tamaños": ["S", "M", "L", "XL"],
+      "especificaciones": {
+        "material": "Algodón 100%",
+        "peso": "500g",
+        "fabricado_en": "Argentina"
+      },
+      "category" : "remera",
+      "colores": [
+        { "nombre": "Beige", "cantidad": 0, "stock": 15 },
+        { "nombre": "Blanco", "cantidad": 0, "stock": 15 },
+        { "nombre": "Bordo", "cantidad": 0, "stock": 15 }
+      ],
+      "ingreso": "viejo"
+    },
+    {
+      "id": 4,
+      "name": "Nombre del Producto 4",
+      "image": "https://cameo-oficial.com.ar/wp-content/uploads/2025/01/CATALOGO_Mesa-de-trabajo-1-2-scaled.jpg",
+      "calificacion": 3.0,
+      "opiniones": 13,
+      "description": "Descripción del producto. Perfecto para el uso diario.",
+      "stock": true,
+      "descuento": 0,
+      "precio_actual": 300,
+      "precio_original": 300,
+      "tamaños": ["S", "M", "L", "XL"],
+      "especificaciones": {
+        "material": "Algodón 100%",
+        "peso": "500g",
+        "fabricado_en": "Argentina"
+      },
+      "category" : "body",
+      "colores": [
+        { "nombre": "Beige", "cantidad": 0, "stock": 15 },
+        { "nombre": "Blanco", "cantidad": 0, "stock": 15 },
+        { "nombre": "Bordo", "cantidad": 0, "stock": 15 }
+      ],
+      "ingreso": "nuevo"
+    },
+    {
+      "id": 5,
+      "name": "Remera escote cuadrado",
+      "image": "https://cameo-oficial.com.ar/wp-content/uploads/2025/06/CATALOGO-04-5-scaled.jpg",
+      "calificacion": 4.5,
+      "opiniones": 32,
+      "description": "Remera básica con escote cuadrado en variedad de colores neutros. Estilo cómodo y ajustado.",
+      "stock": true,
+      "descuento": 10,
+      "precio_actual": 180,
+      "precio_original": 200,
+      "tamaños": ["S", "M", "L"],
+      "especificaciones": {
+        "material": "Algodón con spandex",
+        "peso": "300g",
+        "fabricado_en": "Argentina"
+      },
+      "category" : "remera",
+      "colores": [
+        { "nombre": "Negro", "cantidad": 0, "stock": 10 },
+        { "nombre": "Gris", "cantidad": 0, "stock": 12 },
+        { "nombre": "Chocolate", "cantidad": 0, "stock": 8 },
+        { "nombre": "Blanco", "cantidad": 0, "stock": 10 },
+        { "nombre": "Bordo", "cantidad": 0, "stock": 10 }
+      ],
+      "ingreso": "viejo"
+    },
+    {
+      "id": 6,
+      "name": "Remera Minimalist",
+      "image": "https://cameo-oficial.com.ar/wp-content/uploads/2025/06/CATALOGO-02-6-scaled.jpg",
+      "calificacion": 4.2,
+      "opiniones": 18,
+      "description": "Remera entallada con mangas amplias y estampa 'MINIMALIST'. Estilo urbano.",
+      "stock": true,
+      "descuento": 5,
+      "precio_actual": 190,
+      "precio_original": 200,
+      "tamaños": ["S", "M", "L"],
+      "especificaciones": {
+        "material": "Algodón 100%",
+        "peso": "280g",
+        "fabricado_en": "Argentina"
+      },
+      "category" : "remera",
+      "colores": [
+        { "nombre": "Chocolate", "cantidad": 0, "stock": 14 }
+      ],
+      "ingreso": "viejo"
+    },
+    {
+      "id": 7,
+      "name": "Sweater básico de punto",
+      "image": "https://cameo-oficial.com.ar/wp-content/uploads/2025/06/CATALOGO-02-1-scaled.jpg",
+      "calificacion": 4.6,
+      "opiniones": 41,
+      "description": "Sweater de punto suave, ideal para días frescos. Disponible en cinco colores.",
+      "stock": true,
+      "descuento": 15,
+      "precio_actual": 420,
+      "precio_original": 495,
+      "tamaños": ["S", "M", "L", "XL"],
+      "especificaciones": {
+        "material": "Acrílico y algodón",
+        "peso": "700g",
+        "fabricado_en": "Argentina"
+      },
+      "category" : "buzo",
+      "colores": [
+        { "nombre": "Negro", "cantidad": 0, "stock": 10 },
+        { "nombre": "Gris", "cantidad": 0, "stock": 10 },
+        { "nombre": "Blanco", "cantidad": 0, "stock": 10 },
+        { "nombre": "Camel", "cantidad": 0, "stock": 10 },
+        { "nombre": "Bordo", "cantidad": 0, "stock": 10 }
+      ],
+      "ingreso": "nuevo"
+    }
+  ]
+}

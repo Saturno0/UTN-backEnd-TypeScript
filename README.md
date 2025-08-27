@@ -1,69 +1,69 @@
-# React + TypeScript + Vite
+## E‑Commerce Ropa (React + TypeScript + Vite + Express)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Single‑page e‑commerce demo with a React frontend (Vite + TypeScript + Redux Toolkit + React Router) and a simple Express server backed by MySQL.
 
-Currently, two official plugins are available:
+### Tech stack
+- Frontend: React 19, Vite 7, TypeScript, Redux Toolkit, React Router
+- Backend: Express 5, `mysql2/promise`, CORS, Dotenv
+- Styling: CSS modules and global styles under `src/styles/`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Prerequisites
+- Node.js 18.17+ (Node 20 LTS recommended)
+- npm 9+
+- Optional for backend: MySQL 8+
 
-## Expanding the ESLint configuration
+If you see `TypeError: crypto.hash is not a function`, upgrade Node (Vite requires modern Node).
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Getting started (frontend only)
+```bash
+npm install
+npm run dev
+# opens http://localhost:5173
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Run the backend (optional)
+1) Configure environment variables (create `.env` from `env.example`):
 ```
+PORT=4000
+CORS_ORIGIN=http://localhost:5173
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=root
+DB_NAME=shopdb
+```
+2) Create schema (optional example under `database/schema.sql`).
+
+3) Start the API:
+```bash
+npm run server:dev
+# server runs on http://localhost:4000
+```
+
+Frontend endpoints expect your own data. Adjust any hardcoded URLs (e.g., in `src/components/Checkout.tsx`).
+
+### Scripts
+- `npm run dev`: start Vite dev server
+- `npm run build`: type‑check and build
+- `npm run preview`: preview production build
+- `npm run lint`: run ESLint
+- `npm run server:dev`: start Express with tsx
+
+### Project structure (high‑level)
+```
+src/
+  components/      # UI components
+  pages/           # Route pages
+  hooks/           # Redux store & slices
+  styles/          # Global CSS
+  server.ts        # Express server
+public/
+database/
+```
+
+### Troubleshooting
+- Blue links / white text: the app imports `src/styles/Index.css`, and the default Vite `index.css` has been neutralized.
+- Missing React/JSX types: install `@types/react @types/react-dom` and set `"jsx": "react-jsx"` in `tsconfig.app.json`.
+- Node types/server types: install `@types/node @types/express @types/cors`.
+
+### License
+ISC (for educational/demo use).

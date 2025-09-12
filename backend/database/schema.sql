@@ -1,4 +1,4 @@
-;-- Database Schema for UTN E-commerce Application
+-- Database Schema for UTN E-commerce Application
 -- Database: shopdb
 
 -- Create database if it doesn't exist
@@ -11,12 +11,6 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    phone VARCHAR(20),
-    address TEXT,
-    city VARCHAR(100),
-    postal_code VARCHAR(10),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

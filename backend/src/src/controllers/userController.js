@@ -1,4 +1,4 @@
-import { createUserService, getUsersService } from "../services/userService"
+import { createUserService, getUsersService } from "../services/userService.js"
 
 
 

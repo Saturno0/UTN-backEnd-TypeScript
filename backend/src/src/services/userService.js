@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../../config.js";
-import { User } from "../models/User.js";
-import bcrypt from 'bcrypt';
-
+import { User } from "../models/User.js"
+// import { findUserByIdAndCheck } from "../utils/userHelpers.js";
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 export const createUserService = async (userData) => {
 
@@ -31,4 +31,37 @@ export const getUsersService = async () => {
     }
 
     return usersData;
+}
+
+export const logIn = async(email, password) => {
+    if(!(email && password)) {
+        const error = new Error("There are missing fields");
+        error.statusCode(400);
+        throw error;
+    }
+
+    const userFound = await User.findOne({email});
+
+    if(!userFound) {
+        const error = new Error("No user found");
+        error.statusCode = 204;
+        throw error;
+    }
+
+    // Comparamos la password que llega contra la guardada en la db
+    // Toma la contraseña del cliente la encripta y la compara contra la guardada (encriptada)
+    if(!bcrypt.compareSync(password, userFound.password)){
+        const error = new Error("User or password are incorrect");
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const payload = {
+        userId: userFound._id,
+        userEmail: userFound.email
+    }
+
+    const token = jwt.sign(payload, JWT_SECRET, {expiresIn: "1h"});
+
+    return {message: "logged in succesfuly", token};
 }

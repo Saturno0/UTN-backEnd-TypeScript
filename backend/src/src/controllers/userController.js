@@ -16,7 +16,6 @@ export const createUser = async (req, res) => {
     }
 }
 
-
 export const getUsers = async (req, res) => {
     try {
         const users = await getUsersService();

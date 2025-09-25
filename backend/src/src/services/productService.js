@@ -51,8 +51,8 @@ export const createProductsService = async(productsData) => {
 export const updateProductService = async (id, productData) => {
     const product = await findProductById(id);
 
-    const newProduct = await Product.assign(product, productData);
-    await newProduct.save();
+    Object.assign(product, productData);
+    await product.save();
 
     return { message: "Product updated successfully" };
 }

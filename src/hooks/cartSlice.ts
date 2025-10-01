@@ -7,10 +7,16 @@ import type { CartState } from '../types/types';
 const cartData = localStorage.getItem('cart');
 const storedCart: CartState | null = cartData ? JSON.parse(cartData) : null;
 
+const normalizeStoredProducts = (products: CartState['products']) =>
+  products.map((product) => ({
+    ...product,
+    id: typeof product.id === 'number' ? product.id.toString() : product.id,
+  }));
+
 const initialState: CartState = storedCart
   ? {
       totalItems: storedCart.totalItems,
-      products: storedCart.products,
+      products: normalizeStoredProducts(storedCart.products),
     }
   : {
       totalItems: 0,
@@ -27,7 +33,7 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (
       state: CartState,
-      action: PayloadAction<{ name: string; id: number; color: string; price: number; quantity: number; image: string }>
+      action: PayloadAction<{ name: string; id: string; color: string; price: number; quantity: number; image: string }>
     ) => {
       const { name, id, color, price, quantity, image } = action.payload;
       state.products.push({
@@ -43,11 +49,11 @@ const cartSlice = createSlice({
     },
     removeFromCart: (
       state: CartState,
-      action: PayloadAction<{ name: string; color: string }>
+      action: PayloadAction<{ id: string; name: string; color: string }>
     ) => {
-      const { name, color } = action.payload;
+      const { id, name, color } = action.payload;
       const index = state.products.findIndex(
-        (item: { name: string; color: string; }) => item.name === name && item.color === color
+        (item) => item.id === id && item.name === name && item.color === color
       );
       if (index !== -1) {
         state.products.splice(index, 1);

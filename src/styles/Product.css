@@ -153,6 +153,71 @@ button:hover {
     background-color: #c60055;
 }
 
+.product-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.product-feedback {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.product-feedback.success {
+    background-color: #e8f5e9;
+    color: #1b5e20;
+}
+
+.product-feedback.error {
+    background-color: #ffebee;
+    color: #b71c1c;
+}
+
+.product-colors-editor {
+    margin-top: 2rem;
+}
+
+.color-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.color-editor-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.color-editor-row input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.color-editor-row button {
+    background-color: #e53935;
+}
+
+.color-editor-row button:hover {
+    background-color: #c62828;
+}
+
+.color-editor > button {
+    align-self: flex-start;
+}
+
+.error-message {
+    color: #b71c1c;
+    font-weight: 600;
+}
+
 /* Estilos responsive para móviles y tablets */
 @media (max-width: 768px) {
 

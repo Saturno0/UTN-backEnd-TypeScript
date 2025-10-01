@@ -1,18 +1,92 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation, useParams } from 'react-router-dom';
+
+import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import ProductDetail from '../components/ProductDetail';
-import Footer from '../components/Footer';
-import { useLocation } from 'react-router-dom';
+import useProducts from '../hooks/useProducts';
+import type { Product } from '../types/types';
 import '../styles/Product.css';
 
+interface LocationState {
+    producto?: Product;
+}
 
 const ProductPage = () => {
-    const { state } = useLocation();
-    const producto = state.producto;
+    const { id } = useParams<{ id: string }>();
+    const location = useLocation();
+    const locationState = location.state as LocationState | null;
+    const initialProduct = locationState?.producto ?? null;
+
+    const { fetchProductById, updateProduct, error } = useProducts({ autoFetch: false });
+
+    const [product, setProduct] = useState<Product | null>(initialProduct);
+    const [loading, setLoading] = useState<boolean>(!initialProduct && Boolean(id));
+    const [status, setStatus] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+    useEffect(() => {
+        if (!product && id) {
+            setLoading(true);
+            fetchProductById(id)
+                .then((fetchedProduct) => {
+                    setProduct(fetchedProduct);
+                    setStatus(null);
+                })
+                .catch((err) => {
+                    const message = err instanceof Error ? err.message : 'No se pudo cargar el producto.';
+                    setStatus({ message, type: 'error' });
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        }
+    }, [fetchProductById, id, product]);
+
+    const handleUpdateProduct = useCallback(
+        async (productId: string, updates: Partial<Product>) => {
+            try {
+                const updated = await updateProduct(productId, updates);
+                if (updated) {
+                    setProduct(updated);
+                    setStatus({ message: 'Producto actualizado correctamente.', type: 'success' });
+                }
+                return updated;
+            } catch (err) {
+                const message = err instanceof Error ? err.message : 'No se pudo actualizar el producto.';
+                setStatus({ message, type: 'error' });
+                throw err;
+            }
+        },
+        [updateProduct]
+    );
+
+    const feedbackMessage = useMemo(() => {
+        if (status) {
+            return status;
+        }
+        if (error) {
+            return { message: error, type: 'error' as const };
+        }
+        return null;
+    }, [error, status]);
 
     return (
         <>
             <Navbar />
-            <ProductDetail product={producto} />
+            <main className="product-page">
+                {loading && <p>Cargando producto...</p>}
+                {!loading && feedbackMessage && (
+                    <p className={`product-feedback ${feedbackMessage.type}`}>
+                        {feedbackMessage.message}
+                    </p>
+                )}
+                {!loading && product && (
+                    <ProductDetail product={product} onUpdateProduct={handleUpdateProduct} />
+                )}
+                {!loading && !product && !feedbackMessage && (
+                    <p>No se encontró el producto solicitado.</p>
+                )}
+            </main>
             <Footer />
         </>
     );

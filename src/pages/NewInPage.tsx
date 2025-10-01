@@ -1,16 +1,26 @@
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import NewIn from "../components/NewIn";
-import productos from '../../public/products.json';
-import '../styles/Index.css'
+import useProducts from "../hooks/useProducts";
+import "../styles/Index.css";
 
 const NewInPage = () => {
-    const products = productos.products;
-    
+    const { products, loading, error } = useProducts();
+
     return(
         <>
             <Navbar />
-            <NewIn products={products}/>
+            {loading && (
+                <main>
+                    <p>Cargando productos...</p>
+                </main>
+            )}
+            {!loading && error && (
+                <main>
+                    <p>{error}</p>
+                </main>
+            )}
+            {!loading && !error && <NewIn products={products}/>}
             <Footer />
         </>
     );

@@ -7,11 +7,19 @@ interface ProductCardProps {
 
 
 const ProductCard: React.FC<ProductCardProps> = ({ producto }) => {
+    const productId = typeof producto._id === 'string'
+        ? producto._id
+        : typeof producto.id === 'number'
+            ? producto.id.toString()
+            : producto.id ?? '';
+
+    const linkTarget = productId ? `/producto/${productId}` : '#';
+
     return (
         <Link to={{
-                pathname: `/producto/${producto.id}`,
+                pathname: linkTarget,
                 hash: "#main"
-            }} 
+            }}
             state={{productos: producto, producto: producto}}
         >
             <div className="card">

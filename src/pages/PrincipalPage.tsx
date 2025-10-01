@@ -1,16 +1,26 @@
 import Navbar from "../components/Navbar";
 import Main from "../components/Main";
 import Footer from "../components/Footer";
-import productsJson from '../../public/products.json';
-import '../styles/Index.css';
-import type { Product } from "../types/types";
+import useProducts from "../hooks/useProducts";
+import "../styles/Index.css";
 
 function PrincipalPage() {
-    const productsData: Product[] = productsJson.products;
+    const { products, loading, error } = useProducts();
+
     return (
         <>
             <Navbar/>
-            <Main products={productsData} />
+            {loading && (
+                <main>
+                    <p>Cargando productos...</p>
+                </main>
+            )}
+            {!loading && error && (
+                <main>
+                    <p>{error}</p>
+                </main>
+            )}
+            {!loading && !error && <Main products={products} />}
             <Footer/>
         </>
     )

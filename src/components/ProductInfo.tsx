@@ -5,6 +5,9 @@ interface ProductInfoProps {
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
+    const sizes = Array.isArray(product.tamaños) ? product.tamaños : [];
+    const specs = product.especificaciones ?? { material: '', peso: '', fabricado_en: '' };
+
     return (
         <>
             <h2>{product.name}</h2>
@@ -27,15 +30,15 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
 
             <label htmlFor="size">Tamaño:</label>
             <select id="size" name="size">
-                {product.tamaños.map((t) => (
+                {sizes.map((t) => (
                     <option key={t}>{t}</option>
                 ))}
             </select>
 
             <ul className="specs">
-                <li>Material: {product.especificaciones.material}</li>
-                <li>Peso: {product.especificaciones.peso}</li>
-                <li>Fabricado en: {product.especificaciones.fabricado_en}</li>
+                <li>Material: {specs.material}</li>
+                <li>Peso: {specs.peso}</li>
+                <li>Fabricado en: {specs.fabricado_en}</li>
             </ul>
         </>
     )

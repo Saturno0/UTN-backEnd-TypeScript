@@ -1,21 +1,33 @@
 import express from 'express';
-import bodyParser from 'body-parser'
-import { connectDB } from './db.js'
-import { JWT_SECRET, PORT } from './config.js'
-import { userRoute } from './src/routes/userRoute.js'
-import session from 'express-session'
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import session from 'express-session';
+
+import { connectDB } from './db.js';
+import { CORS_ORIGIN, JWT_SECRET, PORT } from './config.js';
 import { categoryRouter } from './src/routes/categoryRoute.js';
+import { colorRouter } from './src/routes/colorRoute.js';
 import { productRouter } from './src/routes/productRoute.js';
 import { sizeRouter } from './src/routes/sizeRoute.js';
-import { colorRouter } from './src/routes/colorRoute.js';
+import { userRoute } from './src/routes/userRoute.js';
 
 const app = express();
 
 connectDB();
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(bodyParser.urlencoded({extended: true}));
+const allowedOrigins = (CORS_ORIGIN || 'http://localhost:5173')
+  .split(',')
+  .map((origin) => origin.trim());
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
 
 app.use(
     session({

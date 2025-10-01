@@ -25,11 +25,11 @@ app.use(
     })
 )
 
-app.use('/api/users', userRoute);
-app.use('/api/categories', categoryRouter);
-app.use('/api/products', productRouter);
-app.use('/api/sizes', sizeRouter);
-app.use('/api/colors', colorRouter);
+app.use('/users', userRoute);
+app.use('/categories', categoryRouter);
+app.use('/products', productRouter);
+app.use('/sizes', sizeRouter);
+app.use('/colors', colorRouter);
 
 app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`)

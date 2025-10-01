@@ -1,4 +1,5 @@
 import {
+  createCategoriesService,
   createCategoryService,
   getCategoriesService,
   getCategoryService,
@@ -48,3 +49,15 @@ export const createCategory = async (req, res) => {
     }
   }
 };
+
+export const createCategories = async (req,res) => {
+  try {
+    const result = await createCategoriesService(req.body);
+    return res.status(201).json(result);
+  } catch (error) {
+    if (error.statusCode === 409) {
+      return res.status(409).json(error.message);
+    }
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}

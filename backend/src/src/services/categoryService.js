@@ -32,3 +32,18 @@ export const createCategoryService = async (categoryData) => {
 
   return { message: "Category created successfully" };
 };
+
+export const createCategoriesService = async (categoriesData) => {
+  const nombres = categoriesData.map((c) => c.nombre);
+  console.log(nombres);
+    const existings = await Category.find({ nombre: { $in: nombres } });
+    if (existings.length > 0) {
+      const error = new Error("Some category already exist");
+      error.statusCode = 409;
+      
+      throw error;
+    }
+  
+    const created = await Category.insertMany(categoriesData);
+    return { message: "Categories created successfully", categories: created };
+}

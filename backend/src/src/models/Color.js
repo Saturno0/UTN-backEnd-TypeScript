@@ -6,8 +6,6 @@ const { Schema, model, models } = mongoose;
 const colorSchema = new Schema(
   {
     nombre: { type: String, required: true, trim: true },
-    cantidad: { type: Number, default: 0, min: 0 },
-    stock: { type: Number, default: 0, min: 0 },
   },
   { timestamps: true }
 );

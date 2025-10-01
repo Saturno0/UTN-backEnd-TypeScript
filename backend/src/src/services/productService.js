@@ -3,7 +3,6 @@ import { findProductById } from "../utils/helpers.js";
 
 const productPopulateOptions = [
   { path: "tamaños", select: "nombre -_id" },
-  { path: "colores", select: "nombre cantidad stock -_id" },
   { path: "category", select: "nombre -_id" },
 ];
 
@@ -31,11 +30,19 @@ const formatProductForFrontend = (product) => {
           if (!color) return null;
           return {
             nombre: color.nombre,
-            cantidad: color.cantidad,
-            stock: color.stock,
+            cantidad: Number.isFinite(Number(color.cantidad))
+              ? Number(color.cantidad)
+              : 0,
+            stock: Number.isFinite(Number(color.stock))
+              ? Number(color.stock)
+              : 0,
+            _id:
+              color._id && typeof color._id.toString === "function"
+                ? color._id.toString()
+                : color._id,
           };
         })
-        .filter(Boolean)
+        .filter((color) => color && color.nombre)
     : [];
 
   const categoryName =
@@ -83,21 +90,35 @@ export const getProductByIdService = async (id) => {
   return formatProductForFrontend(product);
 };
 
-export const createProductService = async(productData) => {
-    const productExist = Product.findOne({name: productData.name});
+const normalizeColorsForPersistence = (colors = []) =>
+  colors
+    .filter((color) => color && color.nombre)
+    .map((color) => ({
+      nombre: color.nombre.trim(),
+      cantidad: Number.isFinite(Number(color.cantidad))
+        ? Number(color.cantidad)
+        : 0,
+      stock: Number.isFinite(Number(color.stock)) ? Number(color.stock) : 0,
+    }));
 
-    if(!productExist) {
-        const error = new Error("This product already exist");
-        error.statusCode = 409;
-        throw error;
-    }
+export const createProductService = async (productData) => {
+  const productExist = await Product.findOne({ name: productData.name });
 
-    const newProduct = new Product(productData);
+  if (productExist) {
+    const error = new Error("This product already exist");
+    error.statusCode = 409;
+    throw error;
+  }
 
-    await newProduct.save();
+  const newProduct = new Product({
+    ...productData,
+    colores: normalizeColorsForPersistence(productData.colores),
+  });
 
-    return { message: "Product created successfully" };
-}
+  await newProduct.save();
+
+  return { message: "Product created successfully" };
+};
 
 export const createProductsService = async(productsData) => {
     const productsExist = await Product.find({ name: { $in: productsData.map(p => p.name) } });
@@ -108,18 +129,42 @@ export const createProductsService = async(productsData) => {
         throw error;
     }
 
-    const newProducts = await Product.insertMany(productsData);
+    const formattedProducts = productsData.map((product) => ({
+      ...product,
+      colores: normalizeColorsForPersistence(product.colores),
+    }));
+
+    const newProducts = await Product.insertMany(formattedProducts);
     return { message: "Products created successfully", products: newProducts };
 }
 
 export const updateProductService = async (id, productData) => {
-    const product = await findProductById(id);
+  const product = await findProductById(id);
 
-    Object.assign(product, productData);
-    await product.save();
+  if (!product) {
+    const error = new Error("No product existing");
+    error.statusCode = 404;
+    throw error;
+  }
 
-    return { message: "Product updated successfully" };
-}
+  const updatePayload = { ...productData };
+
+  if (Object.prototype.hasOwnProperty.call(productData, "colores")) {
+    updatePayload.colores = normalizeColorsForPersistence(productData.colores);
+  }
+
+  Object.assign(product, updatePayload);
+  await product.save();
+
+  const updatedProduct = await Product.findById(id)
+    .populate(productPopulateOptions)
+    .lean();
+
+  return {
+    message: "Product updated successfully",
+    product: formatProductForFrontend(updatedProduct),
+  };
+};
 
 export const deleteProductService = async(id) => {
     const product = await findProductById(id);

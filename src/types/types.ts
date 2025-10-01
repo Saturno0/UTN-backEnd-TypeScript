@@ -1,6 +1,8 @@
 import type { Dispatch } from "@reduxjs/toolkit";
 
 export interface ProductColor {
+  _id?: string;
+  id?: string;
   nombre: string;
   cantidad: number;
   stock: number;
@@ -23,7 +25,8 @@ export interface FormData {
 }
 
 export interface Product {
-  id: number;
+  _id?: string;
+  id?: string | number;
   name: string;
   image: string;
   category: string;
@@ -46,7 +49,7 @@ export interface CartState {
 }
 
 export interface CartItem {
-  id: number;
+  id: string;
   name: string;
   color: string;
   precio_actual: number;

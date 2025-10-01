@@ -8,6 +8,12 @@ interface ProductColorsProps {
 }
 
 const ProductColors: React.FC<ProductColorsProps> = ({ product, quantities, onQuantityChange }) => {
+    const availableColors = Array.isArray(product.colores) ? product.colores : [];
+
+    if (availableColors.length === 0) {
+        return <p>No hay colores disponibles para este producto.</p>;
+    }
+
     return(
         <table className="color-table">
             <thead>
@@ -18,7 +24,7 @@ const ProductColors: React.FC<ProductColorsProps> = ({ product, quantities, onQu
                 </tr>
             </thead>
             <tbody>
-                {product.colores.map(({ nombre, stock }) => (
+                {availableColors.map(({ nombre, stock }) => (
                     <tr key={nombre}>
                         <td>{nombre}</td>
                         <td>
@@ -26,7 +32,7 @@ const ProductColors: React.FC<ProductColorsProps> = ({ product, quantities, onQu
                                 type="number"
                                 min="0"
                                 max={stock}
-                                value={quantities[nombre]}
+                                value={quantities[nombre] ?? 0}
                                 onChange={(e) => onQuantityChange(nombre, e.target.value)}
                             />
                         </td>

@@ -31,7 +31,15 @@ const CartItems: React.FC<CartItemsProps> = ({ items, dispatch }) => {
           </div>
           <button
             className="btn-remove"
-            onClick={() => dispatch(removeFromCart(item))}
+            onClick={() =>
+              dispatch(
+                removeFromCart({
+                  id: item.id,
+                  name: item.name,
+                  color: item.color,
+                })
+              )
+            }
           >
             Quitar uno
           </button>

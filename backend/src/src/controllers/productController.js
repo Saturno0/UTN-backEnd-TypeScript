@@ -52,6 +52,7 @@ export const createProducts = async (req,res) => {
     try {
         const productsData = req.body;
         const response = await createProductsService(productsData);
+        res.status(200).json(response);
     } catch (error) {
         if (error.statusCode === 409) {
             res.status(409).json(error.message);

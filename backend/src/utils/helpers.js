@@ -7,7 +7,7 @@ export const findUserById = async(userId) => {
 
     if(!user) {
         const error = new Error("No user existing");
-        error.stateCode(204);
+        error.statusCode(204);
         throw error;
     }
 
@@ -19,7 +19,7 @@ export const findCategoryById = async(categoryId) => {
 
     if(!category) {
         const error = new Error("No Category existing");
-        error.stateCode(204);
+        error.statusCode(204);
         throw error;
     }
 
@@ -31,7 +31,7 @@ export const findProductById = async(productId) => {
 
     if(!product) {
         const error = new Error("No product existing");
-        error.stateCode(404);
+        error.statusCode(404);
         throw error;
     }
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 
 import Footer from '../components/Footer';
@@ -18,7 +18,7 @@ const ProductPage = () => {
     const locationState = location.state as LocationState | null;
     const initialProduct = locationState?.producto ?? null;
 
-    const { fetchProductById, updateProduct, error } = useProducts({ autoFetch: false });
+    const { fetchProductById, error } = useProducts({ autoFetch: false });
 
     const [product, setProduct] = useState<Product | null>(initialProduct);
     const [loading, setLoading] = useState<boolean>(!initialProduct && Boolean(id));
@@ -42,23 +42,6 @@ const ProductPage = () => {
         }
     }, [fetchProductById, id, product]);
 
-    const handleUpdateProduct = useCallback(
-        async (productId: string, updates: Partial<Product>) => {
-            try {
-                const updated = await updateProduct(productId, updates);
-                if (updated) {
-                    setProduct(updated);
-                    setStatus({ message: 'Producto actualizado correctamente.', type: 'success' });
-                }
-                return updated;
-            } catch (err) {
-                const message = err instanceof Error ? err.message : 'No se pudo actualizar el producto.';
-                setStatus({ message, type: 'error' });
-                throw err;
-            }
-        },
-        [updateProduct]
-    );
 
     const feedbackMessage = useMemo(() => {
         if (status) {
@@ -81,7 +64,7 @@ const ProductPage = () => {
                     </p>
                 )}
                 {!loading && product && (
-                    <ProductDetail product={product} onUpdateProduct={handleUpdateProduct} />
+                    <ProductDetail product={product} />
                 )}
                 {!loading && !product && !feedbackMessage && (
                     <p>No se encontró el producto solicitado.</p>

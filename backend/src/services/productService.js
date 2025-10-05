@@ -138,33 +138,28 @@ export const createProductsService = async(productsData) => {
     return { message: "Products created successfully", products: newProducts };
 }
 
-export const updateProductService = async (id, productData) => {
-  const product = await findProductById(id);
 
-  if (!product) {
-    const error = new Error("No product existing");
-    error.statusCode = 404;
-    throw error;
-  }
 
-  const updatePayload = { ...productData };
+export const updateProductService = async (productId, updateData) => {
+    const productExist = await Product.findOne({ _id: productId })
 
-  if (Object.prototype.hasOwnProperty.call(productData, "colores")) {
-    updatePayload.colores = normalizeColorsForPersistence(productData.colores);
-  }
+    if(!productExist){
+       const error = new Error("The product you're trying to update does not exist")
+        error.statusCode = 400;
+        throw error;
+    }
 
-  Object.assign(product, updatePayload);
-  await product.save();
+    const updatedProduct = await Product.findByIdAndUpdate(
+        { _id: productId },
+        updateData,
+        { new: true }
+    )
 
-  const updatedProduct = await Product.findById(id)
-    .populate(productPopulateOptions)
-    .lean();
-
-  return {
-    message: "Product updated successfully",
-    product: formatProductForFrontend(updatedProduct),
-  };
-};
+    return {
+      product: updatedProduct,
+      message: "product updated succesfully"
+    }
+}
 
 export const deleteProductService = async(id) => {
     const product = await findProductById(id);

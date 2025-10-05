@@ -30,7 +30,7 @@ export const validate = async(req, res) => {
         const {email, password} = req.body;
         const result = await logIn(email, password);
         console.log(result);
-        return res.status(200).json({ message: result.message });
+        return res.status(200).json({ message: result.message, token: result.token });
     } catch (error) {
         if(error.statusCode === 400){
             return res.status(error.statusCode).json({message: error.message})
@@ -42,7 +42,7 @@ export const validate = async(req, res) => {
 
 export const updateUser = async(req, res) => {
     try {
-        const { id } = req.props;
+        const { id } = req.params;
         const userData = req.body;
         const result = await updateUserService(id, userData);
         console.log(result);
@@ -58,7 +58,7 @@ export const updateUser = async(req, res) => {
 
 export const getRol = async(req,res) => {
     try {
-        const id = req.props;
+        const { id } = req.params;
         const result = await getRolService(id);
         console.log(result);
         return res.status(200).json({ rol: result });

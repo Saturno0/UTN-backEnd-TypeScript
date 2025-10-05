@@ -47,6 +47,34 @@
   cursor: pointer;
 }
 
+.login-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .login-button:hover {
   background-color: #0056b3;
+}
+
+.login-error {
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+  color: #d32f2f;
+  font-size: 0.875rem;
+}
+
+.login-helper-text {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.login-helper-text a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.login-helper-text a:hover {
+  text-decoration: underline;
 }

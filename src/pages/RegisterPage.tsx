@@ -1,16 +1,16 @@
 import Navbar from "../components/Navbar";
-import Login from "../components/Login";
+import Register from "../components/Register";
 import Footer from "../components/Footer";
 import "../styles/Login.css";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   return (
     <>
       <Navbar />
-      <Login />
+      <Register />
       <Footer />
     </>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

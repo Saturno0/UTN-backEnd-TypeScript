@@ -36,7 +36,7 @@ export const getUsersService = async () => {
 export const logIn = async(email, password) => {
     if(!(email && password)) {
         const error = new Error("There are missing fields");
-        error.statusCode(400);
+        error.statusCode = 400;
         throw error;
     }
 

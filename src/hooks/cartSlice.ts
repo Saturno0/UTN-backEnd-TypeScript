@@ -10,7 +10,7 @@ const storedCart: CartState | null = cartData ? JSON.parse(cartData) : null;
 const normalizeStoredProducts = (products: CartState['products']) =>
   products.map((product) => ({
     ...product,
-    id: typeof product.id === 'number' ? product.id.toString() : product.id,
+    id: String(product.id),
   }));
 
 const initialState: CartState = storedCart

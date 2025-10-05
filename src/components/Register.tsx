@@ -1,63 +1,89 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { register } from '../hooks/userSlice';
-import { useNavigate } from 'react-router-dom';
+import React, { useMemo, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useCreateUser } from "../hooks/users";
+import { register } from "../hooks/userSlice";
+import type { AppDispatch } from "../hooks/store";
 
-const Login: React.FC = () => {
-  const dispatch = useDispatch();
+const Register: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const { createUser, loading, error } = useCreateUser();
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const isSubmitDisabled = useMemo(() => {
+    return loading || !email || !username || !password;
+  }, [email, loading, password, username]);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    localStorage.setItem("user", JSON.stringify({ username, email }));
+
+    const response = await createUser({
+      nombre: username,
+      email,
+      password,
+    });
+
+    if (!response) {
+      return;
+    }
+
     dispatch(register({ username, email, password }));
     navigate(-1);
   };
 
   return (
     <main className="login-page-container">
-        <form className="login-form" onSubmit={handleSubmit}>
-          <h2 className="login-title">Crear cuenta</h2>
+      <form className="login-form" onSubmit={handleSubmit}>
+        <h2 className="login-title">Crear cuenta</h2>
 
-          <label className="login-label">Nombre de usuario</label>
-          <input
-            className="login-input"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder='Ingrese su nombre de usuario'
-            required
-          />
+        <label className="login-label">Nombre de usuario</label>
+        <input
+          className="login-input"
+          type="text"
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+          placeholder="Ingrese su nombre de usuario"
+          required
+        />
 
-          <label htmlFor='email' className='login-label'>Email</label>
-          <input
-            className="login-input"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder='Ingrese su email'
-            required
-          />
+        <label htmlFor="email" className="login-label">
+          Email
+        </label>
+        <input
+          className="login-input"
+          type="email"
+          id="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="Ingrese su email"
+          required
+        />
 
-          <label className="login-label">Contraseña</label>
-          <input
-            className="login-input"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder='Ingrese su contraseña'
-            required
-          />
+        <label className="login-label">Contraseña</label>
+        <input
+          className="login-input"
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          placeholder="Ingrese su contraseña"
+          required
+        />
 
-          <button className="login-button" type="submit">
-            Registrarse
-          </button>
-        </form>
+        {error && <p className="login-error">{error}</p>}
+
+        <button className="login-button" type="submit" disabled={isSubmitDisabled}>
+          {loading ? "Creando cuenta..." : "Registrarse"}
+        </button>
+
+        <p className="login-helper-text">
+          ¿Ya tenés una cuenta? <Link to="/login">Iniciar sesión</Link>
+        </p>
+      </form>
     </main>
   );
 };
 
-export default Login;
+export default Register;

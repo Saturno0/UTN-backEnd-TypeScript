@@ -6,6 +6,7 @@ import NewInPage from "./pages/NewInPage"
 import PrincipalPage from "./pages/PrincipalPage"
 import ProductPage from "./pages/ProductPage"
 import ProfilePage from "./pages/ProfilePage"
+import RegisterPage from "./pages/RegisterPage"
 import { Route, Routes } from "react-router-dom";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
       <Route path='/checkout' element={<CheckoutPage />}/>
       <Route path='/newIn' element={<NewInPage />}/>
       <Route path='/profile' element={<ProfilePage />}/>
+      <Route path='/register' element={<RegisterPage />}/>
     </Routes>
   )
 }

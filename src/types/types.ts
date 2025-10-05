@@ -68,3 +68,21 @@ export interface UserState {
   password: string;
   isRegistered: boolean;
 }
+
+export interface Category {
+  _id?: string;
+  nombre: string;
+  descripcion?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface ApiUser {
+  _id?: string;
+  nombre: string;
+  email: string;
+  rol?: "user" | "admin";
+  activo?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}

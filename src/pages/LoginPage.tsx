@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar";
-import Login from "../components/Login";
+import Login from "../components/Register";
 import Footer from "../components/Footer";
 import '../styles/Login.css'
 

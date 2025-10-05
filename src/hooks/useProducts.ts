@@ -11,7 +11,7 @@ interface UpdateResponse {
   product?: Product;
 }
 
-const DEFAULT_API_BASE_URL = 'http://localhost:4000';
+const DEFAULT_API_BASE_URL = 'http://localhost:3000/api';
 
 const toStringId = (value: unknown): string | undefined => {
   if (typeof value === 'string') return value;

@@ -65,3 +65,43 @@ export const logIn = async(email, password) => {
 
     return {message: "logged in succesfuly", token};
 }
+
+export const updateUserService = async(idUser, updateData) => {
+    const userExist = await User.findOne({ _id: idUser });
+    
+    if(!userExist){
+        const error = new Error("The product you're trying to update does not exist")
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const isChangingPassword = 'password' in updateData;
+
+    if(isChangingPassword) {
+        updateData.password = await bcrypt.hash(updateData.password, 10);
+    }
+    
+    const updatedUser = await User.findByIdAndUpdate(
+        { _id: idUser },
+        updateData,
+        { new: true }
+    )
+    
+    return {
+      product: updatedUser,
+      message: "user updated succesfully"
+    }
+}
+
+export const getRolService = async(idUser) => {
+    const userExist = await User.findOne({ _id: idUser });
+
+    if(!userExist){
+        const error = new Error("The product you're trying to update does not exist")
+        error.statusCode = 400;
+        throw error;
+    }
+
+    const userRol = userExist.rol;
+    return { userRol };
+}

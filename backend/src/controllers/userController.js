@@ -1,4 +1,4 @@
-import { createUserService, getUsersService, logIn } from "../services/userService.js";
+import { createUserService, getRolService, getUsersService, logIn, updateUserService } from "../services/userService.js";
 
 export const createUser = async (req, res) => {
     try {
@@ -31,6 +31,37 @@ export const validate = async(req, res) => {
         const result = await logIn(email, password);
         console.log(result);
         return res.status(200).json({ message: result.message });
+    } catch (error) {
+        if(error.statusCode === 400){
+            return res.status(error.statusCode).json({message: error.message})
+        }
+        return res.status(500).json({message: "Internal server error", error: error.message})
+    }
+}
+
+
+export const updateUser = async(req, res) => {
+    try {
+        const { id } = req.props;
+        const userData = req.body;
+        const result = await updateUserService(id, userData);
+        console.log(result);
+        return res.status(200).json({ message: result.message });
+    } catch (error) {
+        if(error.statusCode === 400){
+            return res.status(error.statusCode).json({message: error.message})
+        }
+        return res.status(500).json({message: "Internal server error", error: error.message})
+    }
+}
+
+
+export const getRol = async(req,res) => {
+    try {
+        const id = req.props;
+        const result = await getRolService(id);
+        console.log(result);
+        return res.status(200).json({ rol: result });
     } catch (error) {
         if(error.statusCode === 400){
             return res.status(error.statusCode).json({message: error.message})

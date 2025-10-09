@@ -36,7 +36,7 @@ const productSchema = new Schema(
     // Colores disponibles (estructura plana para facilitar su edición desde el frontend)
     colores: [
       {
-        nombre: { type: String, required: true, trim: true },
+        id: { type: Schema.Types.ObjectId, ref: 'Color', required: true, trim: true, unique: true },
         cantidad: { type: Number, required: true, default: 0, min: 0 },
         stock: { type: Number, required: true, default: 0, min: 0 },
       },

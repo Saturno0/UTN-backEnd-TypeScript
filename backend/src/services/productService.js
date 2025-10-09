@@ -2,8 +2,9 @@ import { Product } from "../models/Product.js";
 import { findProductById } from "../utils/helpers.js";
 
 const productPopulateOptions = [
-  { path: "tamaños", select: "nombre -_id" },
-  { path: "category", select: "nombre -_id" },
+  { path: 'colores.id', select: 'nombre' },
+  { path: 'tamaños', select: 'nombre -_id' },
+  { path: 'category', select: 'nombre -_id' },
 ];
 
 const toPlainProduct = (product) =>
@@ -29,20 +30,19 @@ const formatProductForFrontend = (product) => {
         .map((color) => {
           if (!color) return null;
           return {
-            nombre: color.nombre,
             cantidad: Number.isFinite(Number(color.cantidad))
               ? Number(color.cantidad)
               : 0,
             stock: Number.isFinite(Number(color.stock))
               ? Number(color.stock)
               : 0,
-            _id:
-              color._id && typeof color._id.toString === "function"
-                ? color._id.toString()
-                : color._id,
+            id:
+              color.id && typeof color.id.toString === "function"
+                ? color.id.toString()
+                : color.id,
           };
         })
-        .filter((color) => color && color.nombre)
+        .filter((color) => color && color.id)
     : [];
 
   const categoryName =
@@ -63,9 +63,9 @@ const formatProductForFrontend = (product) => {
 };
 
 export const getAllProductsService = async () => {
-  const products = await Product.find()
-    .populate(productPopulateOptions)
-    .lean();
+  const products = await Product.find().populate(productPopulateOptions).lean();
+
+  console.log(products);
 
   if (products.length === 0) {
     const error = new Error("No products found");
@@ -73,7 +73,7 @@ export const getAllProductsService = async () => {
     throw error;
   }
 
-  return products.map(formatProductForFrontend);
+  return products.map((product) =>formatProductForFrontend(product));
 };
 
 export const getProductByIdService = async (id) => {
@@ -134,7 +134,9 @@ export const createProductsService = async(productsData) => {
       colores: normalizeColorsForPersistence(product.colores),
     }));
 
+    console.log(formattedProducts);
     const newProducts = await Product.insertMany(formattedProducts);
+
     return { message: "Products created successfully", products: newProducts };
 }
 

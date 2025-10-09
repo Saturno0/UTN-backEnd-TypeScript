@@ -4,6 +4,7 @@ import {
   deleteProductService,
   getAllColorsByProductService,
   getAllProductsService,
+  getAllSizesByProductService,
   getProductByIdService,
   updateProductService,
 } from "../services/productService.js";
@@ -58,6 +59,16 @@ export const createProduct = async (req, res) => {
     }
   }
 };
+
+export const getAllSizesByProduct = async (req,res) => {
+  try {
+    const { id } = req.params;
+    const response = await getAllSizesByProductService(id);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(error.statusCode === 404 ? 404 : 500).json(error.message);
+  }
+}
 
 export const createProducts = async (req,res) => {
     try {

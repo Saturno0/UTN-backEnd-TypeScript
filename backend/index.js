@@ -6,9 +6,7 @@ import session from 'express-session';
 import { connectDB } from './db.js';
 import { CORS_ORIGIN, JWT_SECRET, PORT } from './config.js';
 import { categoryRouter } from './src/routes/categoryRoute.js';
-import { colorRouter } from './src/routes/colorRoute.js';
 import { productRouter } from './src/routes/productRoute.js';
-import { sizeRouter } from './src/routes/sizeRoute.js';
 import { userRoute } from './src/routes/userRoute.js';
 
 const app = express();
@@ -40,8 +38,6 @@ app.use(
 app.use('/api/users', userRoute);
 app.use('/api/categories', categoryRouter);
 app.use('/api/products', productRouter);
-app.use('/api/sizes', sizeRouter);
-app.use('/api/colors', colorRouter);
 
 app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`)

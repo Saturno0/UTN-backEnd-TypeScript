@@ -92,6 +92,20 @@ export const createProductService = async (productData) => {
   return { message: "Product created successfully" };
 };
 
+export const getAllSizesByProductService = async (idProduct) => {
+  const productExist = await Product.findById(idProduct);
+
+  if (!productExist) {
+    const error = new Error("No product existing");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  const sizes = productExist.tamaños;
+
+  return { sizes };
+};
+
 export const createProductsService = async (productsData) => {
   const productsExist = await Product.find({
     name: { $in: productsData.map((p) => p.name) },

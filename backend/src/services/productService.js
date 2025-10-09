@@ -1,49 +1,17 @@
 import { Product } from "../models/Product.js";
 import { findProductById } from "../utils/helpers.js";
 
-const productPopulateOptions = [
-  { path: 'colores.id', select: 'nombre' },
-  { path: 'tamaños', select: 'nombre -_id' },
-  { path: 'category', select: 'nombre -_id' },
-];
+const productPopulateCategory = { path: "category", select: "nombre" };
 
 const toPlainProduct = (product) =>
-  product && typeof product.toObject === "function" ? product.toObject() : product;
+  product && typeof product.toObject === "function"
+    ? product.toObject()
+    : product;
 
 const formatProductForFrontend = (product) => {
   if (!product) return product;
 
   const plainProduct = toPlainProduct(product);
-
-  const formattedSizes = Array.isArray(plainProduct.tamaños)
-    ? plainProduct.tamaños
-        .map((size) => {
-          if (!size) return null;
-          if (typeof size === "string") return size;
-          return size.nombre;
-        })
-        .filter(Boolean)
-    : [];
-
-  const formattedColors = Array.isArray(plainProduct.colores)
-    ? plainProduct.colores
-        .map((color) => {
-          if (!color) return null;
-          return {
-            cantidad: Number.isFinite(Number(color.cantidad))
-              ? Number(color.cantidad)
-              : 0,
-            stock: Number.isFinite(Number(color.stock))
-              ? Number(color.stock)
-              : 0,
-            id:
-              color.id && typeof color.id.toString === "function"
-                ? color.id.toString()
-                : color.id,
-          };
-        })
-        .filter((color) => color && color.id)
-    : [];
 
   const categoryName =
     plainProduct.category && typeof plainProduct.category === "object"
@@ -57,13 +25,27 @@ const formatProductForFrontend = (product) => {
         ? plainProduct._id.toString()
         : plainProduct._id,
     category: categoryName,
-    tamaños: formattedSizes,
-    colores: formattedColors,
   };
 };
 
+export const getAllColorsByProductService =  async(idProduct) => {
+  const producExist = await Product.findById(idProduct);
+
+  if(!producExist) {
+    const error = new Error("No existing product");
+    error.statusCode(204);
+    throw error;
+  }
+
+  const colors = producExist.colores;
+
+  return {colors};
+}
+
 export const getAllProductsService = async () => {
-  const products = await Product.find().populate(productPopulateOptions).lean();
+  const products = await Product.find()
+    .populate(productPopulateCategory)
+    .lean();
 
   console.log(products);
 
@@ -73,12 +55,12 @@ export const getAllProductsService = async () => {
     throw error;
   }
 
-  return products.map((product) =>formatProductForFrontend(product));
+  return products.map((product) => formatProductForFrontend(product));
 };
 
 export const getProductByIdService = async (id) => {
   const product = await Product.findById(id)
-    .populate(productPopulateOptions)
+    .populate(productPopulateCategory)
     .lean();
 
   if (!product) {
@@ -90,17 +72,6 @@ export const getProductByIdService = async (id) => {
   return formatProductForFrontend(product);
 };
 
-const normalizeColorsForPersistence = (colors = []) =>
-  colors
-    .filter((color) => color && color.nombre)
-    .map((color) => ({
-      nombre: color.nombre.trim(),
-      cantidad: Number.isFinite(Number(color.cantidad))
-        ? Number(color.cantidad)
-        : 0,
-      stock: Number.isFinite(Number(color.stock)) ? Number(color.stock) : 0,
-    }));
-
 export const createProductService = async (productData) => {
   const productExist = await Product.findOne({ name: productData.name });
 
@@ -110,63 +81,64 @@ export const createProductService = async (productData) => {
     throw error;
   }
 
-  const newProduct = new Product({
-    ...productData,
-    colores: normalizeColorsForPersistence(productData.colores),
-  });
+  const colorDuplicate = productExist.colores.filter(
+    (color, index) => productExist.colores.indexOf(color) !== index
+  );
+
+  const newProduct = new Product(...productData);
 
   await newProduct.save();
 
   return { message: "Product created successfully" };
 };
 
-export const createProductsService = async(productsData) => {
-    const productsExist = await Product.find({ name: { $in: productsData.map(p => p.name) } });
+export const createProductsService = async (productsData) => {
+  const productsExist = await Product.find({
+    name: { $in: productsData.map((p) => p.name) },
+  });
 
-    if(productsExist.length > 0) {
-        const error = new Error("Some products already exist");
-        error.statusCode = 409;
-        throw error;
-    }
+  if (productsExist.length > 0) {
+    const error = new Error("Some products already exist");
+    error.statusCode = 409;
+    throw error;
+  }
 
-    const formattedProducts = productsData.map((product) => ({
-      ...product,
-      colores: normalizeColorsForPersistence(product.colores),
-    }));
+  const formattedProducts = productsData.map((product) => ({ ...product }));
 
-    console.log(formattedProducts);
-    const newProducts = await Product.insertMany(formattedProducts);
+  console.log(formattedProducts);
+  const newProducts = await Product.insertMany(formattedProducts);
 
-    return { message: "Products created successfully", products: newProducts };
-}
-
-
+  return { message: "Products created successfully", products: newProducts };
+};
 
 export const updateProductService = async (productId, updateData) => {
-    const productExist = await Product.findOne({ _id: productId })
+  const productExist = await Product.findOne({ _id: productId });
 
-    if(!productExist){
-       const error = new Error("The product you're trying to update does not exist")
-        error.statusCode = 400;
-        throw error;
-    }
+  if (!productExist) {
+    const error = new Error(
+      "The product you're trying to update does not exist"
+    );
+    error.statusCode = 404;
+    throw error;
+  }
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-        { _id: productId },
-        updateData,
-        { new: true }
-    )
+  const updatedProduct = await Product.findByIdAndUpdate(
+    { _id: productId },
+    { runValidators: true },
+    updateData,
+    { new: true }
+  );
 
-    return {
-      product: updatedProduct,
-      message: "product updated succesfully"
-    }
-}
+  return {
+    product: toPlainProduct(updatedProduct),
+    message: "product updated successfully",
+  };
+};
 
-export const deleteProductService = async(id) => {
-    const product = await findProductById(id);
+export const deleteProductService = async (id) => {
+  const product = await findProductById(id);
 
-    await Product.deleteOne({_id: id});
+  await Product.deleteOne({ _id: id });
 
-    return { message: "Product deleted successfully" };
-}
+  return { message: "Product deleted successfully" };
+};

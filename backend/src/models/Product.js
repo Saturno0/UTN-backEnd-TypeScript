@@ -25,7 +25,11 @@ const productSchema = new Schema(
     precio_original: { type: Number, required: true, min: 0 },
 
     // Relación con Size: talles disponibles para el producto
-    tamaños: [{ type: Schema.Types.ObjectId, ref: 'Size' }],
+    tamaños: [{ 
+      name: { type: String, required: true, trim: true, enum: ["XS", "S", "M", "L", "XL"] },
+    }],
+
+    estado: {type: String, enum: ["Activo", "Inactivo"], default: "Activo", required: true},
 
     // Especificaciones embebidas
     especificaciones: especificacionesSchema,
@@ -36,7 +40,7 @@ const productSchema = new Schema(
     // Colores disponibles (estructura plana para facilitar su edición desde el frontend)
     colores: [
       {
-        id: { type: Schema.Types.ObjectId, ref: 'Color', required: true, trim: true, unique: true },
+        name: { type: String, required: true, trim: true },
         cantidad: { type: Number, required: true, default: 0, min: 0 },
         stock: { type: Number, required: true, default: 0, min: 0 },
       },
@@ -48,4 +52,3 @@ const productSchema = new Schema(
 );
 
 export const Product = models.Product || model('Product', productSchema);
-

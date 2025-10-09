@@ -6,6 +6,7 @@ import {
   createProducts,
   updateProduct,
   deleteProduct,
+  getAllColorsByProduct,
 } from "../controllers/productController.js";
 
 export const productRouter = express.Router();
@@ -16,3 +17,4 @@ productRouter.post("/createProduct", createProduct);
 productRouter.post("/createProducts", createProducts);
 productRouter.patch("/updateProduct/:id", updateProduct);
 productRouter.delete("/deleteProduct/:id", deleteProduct);
+productRouter.get("/getAllColors/:id", getAllColorsByProduct);

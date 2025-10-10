@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { Product } from '../types/types';
 import { useState } from 'react';
+import useProducts from '../hooks/useProducts';
 
 interface ProductCardProps {
     producto: Product
@@ -9,6 +10,8 @@ interface ProductCardProps {
 
 
 const ProductCard: React.FC<ProductCardProps> = ({ producto, admin }) => {
+    const { updateProduct, deleteProduct } = useProducts();
+
     const [disponible, setDisponible] = useState<boolean>(producto.estado === 'Activo'? true : false);
 
     const productId = typeof producto._id === 'string'
@@ -19,14 +22,40 @@ const ProductCard: React.FC<ProductCardProps> = ({ producto, admin }) => {
 
     const linkTarget = productId ? `/producto/${productId}` : '#';
 
-    const handleToggleDisponibilidad = (e: React.FormEvent) => {
+    const handleToggleDisponibilidad = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        e.stopPropagation();
         setDisponible(!disponible);
     }
 
-    const handleEliminarProducto = (e: React.FormEvent) => {
+    const handleEliminarProducto = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        // logica para eliminar el producto
+        e.stopPropagation();
+        
+        const confirmDelete = window.confirm(`¿Estás seguro de que deseas eliminar el producto "${producto.name}"? Esta acción no se puede deshacer.`);
+        
+        if (confirmDelete) {
+            try {
+                const response = await deleteProduct(productId);
+                alert(`${response.message || 'Producto eliminado correctamente.'}`);
+            } catch (error: any) {
+                alert('Error al eliminar el producto.');
+                console.error('Error deleting product: ', error.message || error);
+            }
+        }
+    }
+
+    const handleSaveChanges = async (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        try {
+            const updateProductResponse = await updateProduct(productId, {estado: disponible ? 'Activo' : 'Inactivo'});
+            alert(updateProductResponse.message || 'Cambios guardados correctamente.');
+        } catch (error: any) {
+            alert('Error al guardar los cambios.');
+            console.error('Error updating product: ', error.message || error);
+        }
     }
 
     admin = true;
@@ -49,6 +78,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ producto, admin }) => {
                         </button>
                         <button className= { disponible ? 'btn-unavailable' : 'btn-available'} onClick={handleToggleDisponibilidad}>
                             { disponible ? "Sacar disponibilidad" : "Poner disponibilidad"}
+                        </button>
+                        <button className='btn-save' onClick={handleSaveChanges}>
+                            Guardar
                         </button>
                     </div>
                 }

@@ -8,6 +8,7 @@ const baseState: UserState = {
   nombre: "",
   email: "",
   password: "",
+  rol: "",
   activo: false,
 };
 

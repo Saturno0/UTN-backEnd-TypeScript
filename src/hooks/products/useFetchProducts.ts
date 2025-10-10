@@ -6,7 +6,7 @@ function useFetchProducts() {
     const [error, setError]: any = useState();
     const [loading, setLoading] = useState(false);
     const [done, setDone] = useState(false);
-
+    
     const fetchProducts = async () => {
         setLoading(true);
         setError(null);

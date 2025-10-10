@@ -13,7 +13,7 @@ const RightMenu: React.FC<RightMenuProps> = ({ user, totalItems, handleNavigatio
             <div className="right-menu">
                 <ul className="nav-links">
                     <li onClick={() => handleNavigation()}>
-                        <h3>{user.isRegistered? `${user.username}` : "Acceder"}</h3>
+                        <h3>{user.activo? `${user.nombre}` : "Acceder"}</h3>
                     </li>
                     <li>
                         <Link to={{

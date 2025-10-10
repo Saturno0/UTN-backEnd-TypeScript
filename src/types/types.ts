@@ -3,7 +3,7 @@ import type { Dispatch } from "@reduxjs/toolkit";
 export interface ProductColor {
   _id?: string;
   id?: string;
-  nombre: string;
+  name: string;
   cantidad: number;
   stock: number;
 }
@@ -63,10 +63,10 @@ export interface CartItemsProps {
 }
 
 export interface UserState {
-  username: string;
+  nombre: string;
   email: string;
   password: string;
-  isRegistered: boolean;
+  activo: boolean;
 }
 
 export interface Category {

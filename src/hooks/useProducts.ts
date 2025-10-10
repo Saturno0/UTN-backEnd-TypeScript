@@ -128,7 +128,7 @@ const useProducts = (options: UseProductsOptions = {}) => {
         setError(null);
 
         const response = await fetch(`${apiBaseUrl}/products/updateProduct/${id}`, {
-          method: 'PUT',
+          method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
           },

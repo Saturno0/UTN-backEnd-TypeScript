@@ -16,7 +16,7 @@ interface ProductDetailProp {
 
 const buildQuantities = (colors: ProductColor[]) =>
   colors.reduce<Record<string, number>>((acc, colorObj) => {
-    acc[colorObj.nombre] = 0;
+    acc[colorObj.name] = 0;
     return acc;
   }, {});
 
@@ -27,10 +27,7 @@ const normalizeColorField = (value: number | string) => {
     : 0;
 };
 
-const ProductDetail: React.FC<ProductDetailProp> = ({
-  product,
-  onUpdateProduct,
-}) => {
+const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }) => {
   const dispatch = useDispatch();
 
   const productId = useMemo(() => {
@@ -92,15 +89,15 @@ const ProductDetail: React.FC<ProductDetailProp> = ({
 
   const handleColorFieldChange = (
     index: number,
-    field: keyof Pick<ProductColor, 'nombre' | 'cantidad' | 'stock'>,
+    field: keyof Pick<ProductColor, 'name' | 'cantidad' | 'stock'>,
     value: string
   ) => {
     setEditableColors((prev) =>
       prev.map((color, colorIndex) => {
         if (colorIndex !== index) return color;
 
-        if (field === 'nombre') {
-          return { ...color, nombre: value };
+        if (field === 'name') {
+          return { ...color, name: value };
         }
 
         return {
@@ -114,7 +111,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({
   const handleAddColorRow = () => {
     setEditableColors((prev) => [
       ...prev,
-      { nombre: '', cantidad: 0, stock: 0 },
+      { name: '', cantidad: 0, stock: 0 },
     ]);
   };
 
@@ -128,9 +125,9 @@ const ProductDetail: React.FC<ProductDetailProp> = ({
     setIsSavingColors(true);
 
     const sanitizedColors = editableColors
-      .filter((color) => color.nombre.trim() !== '')
+      .filter((color) => color.name.trim() !== '')
       .map((color) => ({
-        nombre: color.nombre.trim(),
+        name: color.name.trim(),
         cantidad: normalizeColorField(color.cantidad),
         stock: normalizeColorField(color.stock),
       }));
@@ -164,6 +161,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({
     return <div>Cargando producto...</div>;
   }
 
+  console.log(product.colores);
   return (
     <div className="product">
       <h1>Producto Destacado</h1>
@@ -175,7 +173,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({
           <ProductInfo product={product} />
 
           <ProductColors
-            product={product}
+            colors={product.colores}
             quantities={quantities}
             onQuantityChange={handleQuantityChange}
           />
@@ -205,12 +203,12 @@ const ProductDetail: React.FC<ProductDetailProp> = ({
               {isEditingColors && (
                 <div className="color-editor">
                   {editableColors.map((color, index) => (
-                    <div className="color-editor-row" key={`${color.nombre}-${index}`}>
+                    <div className="color-editor-row" key={`${color.name}-${index}`}>
                       <input
                         type="text"
-                        value={color.nombre}
+                        value={color.name}
                         onChange={(event) =>
-                          handleColorFieldChange(index, 'nombre', event.target.value)
+                          handleColorFieldChange(index, 'name', event.target.value)
                         }
                         placeholder="Nombre del color"
                       />

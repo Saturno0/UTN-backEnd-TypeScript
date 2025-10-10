@@ -10,7 +10,7 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const { loginUser, loading, error } = useLoginUser();
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+  const [nombre, setnombre] = useState("");
   const [password, setPassword] = useState("");
 
   const isSubmitDisabled = useMemo(() => {
@@ -26,7 +26,7 @@ const Login: React.FC = () => {
       return;
     }
 
-    dispatch(register({ username, email }));
+    dispatch(register({ nombre, email, password }));
     navigate(-1);
   };
 
@@ -39,8 +39,8 @@ const Login: React.FC = () => {
         <input
           className="login-input"
           type="text"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
+          value={nombre}
+          onChange={(event) => setnombre(event.target.value)}
           placeholder="Ingrese su nombre de usuario"
         />
 

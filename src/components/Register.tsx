@@ -10,27 +10,27 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
   const { createUser, loading, error } = useCreateUser();
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
+  const [nombre, setnombre] = useState("");
   const [password, setPassword] = useState("");
 
   const isSubmitDisabled = useMemo(() => {
-    return loading || !email || !username || !password;
-  }, [email, loading, password, username]);
+    return loading || !email || !nombre || !password;
+  }, [email, loading, password, nombre]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
     const response = await createUser({
-      nombre: username,
-      email,
-      password,
+      nombre: nombre,
+      email: email,
+      password: password,
     });
 
     if (!response) {
       return;
     }
 
-    dispatch(register({ username, email, password }));
+    dispatch(register({ nombre, email, password }));
     navigate(-1);
   };
 
@@ -43,8 +43,8 @@ const Register: React.FC = () => {
         <input
           className="login-input"
           type="text"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
+          value={nombre}
+          onChange={(event) => setnombre(event.target.value)}
           placeholder="Ingrese su nombre de usuario"
           required
         />

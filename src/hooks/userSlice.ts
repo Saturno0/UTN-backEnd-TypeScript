@@ -5,10 +5,10 @@ import type { UserState } from "../types/types";
 const STORAGE_KEY = "user";
 
 const baseState: UserState = {
-  username: "",
+  nombre: "",
   email: "",
   password: "",
-  isRegistered: false,
+  activo: false,
 };
 
 const readStoredUser = (): Partial<UserState> | null => {
@@ -34,10 +34,10 @@ const persistUser = (state: UserState) => {
     return;
   }
 
-  const { username, email, password } = state;
+  const { nombre, email, activo } = state;
   window.localStorage.setItem(
     STORAGE_KEY,
-    JSON.stringify({ username, email, password })
+    JSON.stringify({ nombre, email, activo })
   );
 };
 
@@ -56,7 +56,7 @@ const initialState: UserState = storedUser
   ? {
       ...baseState,
       ...storedUser,
-      isRegistered: Boolean(storedUser.username || storedUser.email),
+      activo: Boolean(storedUser.nombre || storedUser.email),
     }
   : baseState;
 
@@ -66,19 +66,19 @@ const userSlice = createSlice({
   reducers: {
     register: (
       state,
-      action: PayloadAction<{ username: string; email: string; password?: string }>
+      action: PayloadAction<{ nombre: string; email: string; password?: string, activo?: boolean}>
     ) => {
-      state.username = action.payload.username;
+      state.nombre = action.payload.nombre;
       state.email = action.payload.email;
       state.password = action.payload.password ?? "";
-      state.isRegistered = true;
+      state.activo = action.payload.activo ?? true;
       persistUser(state);
     },
     logout: (state) => {
-      state.username = "";
+      state.nombre = "";
       state.email = "";
       state.password = "";
-      state.isRegistered = false;
+      state.activo = false;
       removeStoredUser();
     },
   },

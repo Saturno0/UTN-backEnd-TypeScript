@@ -7,10 +7,10 @@ import type { CartItemsProps, UserState } from "../types/types";
 
 const Cart: React.FC<CartItemsProps> = ({ items, dispatch }) => {
   const [user, setUser] = useState<UserState>({
-    username: "",
+    nombre: "",
     email: "",
     password: "",
-    isRegistered: false,
+    activo: false,
   });
 
   const total: number = items.reduce(
@@ -27,24 +27,25 @@ const Cart: React.FC<CartItemsProps> = ({ items, dispatch }) => {
         setUser(JSON.parse(userData) as UserState);
       } catch {
         setUser({
-          username: "",
+          nombre: "",
           email: "",
           password: "",
-          isRegistered: false,
+          activo: false,
         });
       }
     } else {
       setUser({
-        username: "",
+        nombre: "",
         email: "",
         password: "",
-        isRegistered: false,
+        activo: false,
       });
     }
   }, []);
 
   const handleNavigate = () => {
-    if (!user.isRegistered) {
+    console.log(user.activo)
+    if (!user.activo) {
       navigate("/login");
     } else {
       navigate("/checkout");

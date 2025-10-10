@@ -1,16 +1,14 @@
 import type React from "react";
-import type { Product } from "../types/types";
 
 interface ProductColorsProps {
-    product: Product,
+    colors: Array<{ name: string; stock: number, id?: string, _id?: string }>,
     quantities: Record<string, number>,
     onQuantityChange: (nombre: string, value: string) => void
 }
 
-const ProductColors: React.FC<ProductColorsProps> = ({ product, quantities, onQuantityChange }) => {
-    const availableColors = Array.isArray(product.colores) ? product.colores : [];
+const ProductColors: React.FC<ProductColorsProps> = ({ colors, quantities, onQuantityChange }) => {
 
-    if (availableColors.length === 0) {
+    if (colors.length === 0) {
         return <p>No hay colores disponibles para este producto.</p>;
     }
 
@@ -24,16 +22,16 @@ const ProductColors: React.FC<ProductColorsProps> = ({ product, quantities, onQu
                 </tr>
             </thead>
             <tbody>
-                {availableColors.map(({ nombre, stock }) => (
-                    <tr key={nombre}>
-                        <td>{nombre}</td>
+                {colors.map(({ id, name, stock }) => (
+                    <tr key={id}>
+                        <td>{name}</td>
                         <td>
                             <input
                                 type="number"
                                 min="0"
                                 max={stock}
-                                value={quantities[nombre] ?? 0}
-                                onChange={(e) => onQuantityChange(nombre, e.target.value)}
+                                value={quantities[name] ?? 0}
+                                onChange={(e) => onQuantityChange(name, e.target.value)}
                             />
                         </td>
                         <td>{stock}</td>

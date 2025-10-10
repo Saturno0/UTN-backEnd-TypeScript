@@ -5,15 +5,14 @@ function useUpdateProduct() {
     const [error, setError]: any = useState();
     const [loading, setLoading] = useState(false);
     const [done, setDone] = useState(false);
-    const urlBuild = buildApiUrl(API_CONFIG.PRODUCTS.UPDATE);
 
     const updateProduct = async (id: string, formData: Object) => {
         setLoading(true);
         setError(null);
-        urlBuild.replace(":id", `${id}`);
+        const url = buildApiUrl(API_CONFIG.PRODUCTS.UPDATE).replace(":id", `${id}`);
         try {
-            const response = await fetch(urlBuild, {
-                method: "PUT",
+            const response = await fetch(url, {
+                method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
             });

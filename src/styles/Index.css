@@ -118,6 +118,58 @@ main {
   object-fit: cover;
 }
 
+.admin-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.admin-buttons button {
+  margin: 10px 5px;
+}
+
+.btn-unavailable {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: transform 0.1s ease, opacity 0.2s ease;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+}
+
+.btn-unavailable:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.btn-unavailable:active {
+  opacity: 0.8;
+  transform: translateY(1px);
+}
+
+.btn-available {
+  background-color: #198754; /* Verde Bootstrap */
+  color: #d4e3f7; /* Gris casi blanco */
+  font-weight: 600;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-available:hover {
+  background-color: #157347;
+  transform: translateY(-1px);
+}
+
+.btn-available:active {
+  background-color: #15803d; /* Verde oscuro */
+  transform: translateY(1px);
+}
+
 .menu-icon {
   display: none;
   font-size: 24px;

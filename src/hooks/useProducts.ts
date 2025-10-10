@@ -58,27 +58,27 @@ const useProducts = () => {
     deleteProduct,
 
     // estados agrupados (granulares)
-    // loading: {
-    //   all: loadingAll,
-    //   one: loadingOne,
-    //   create: loadingCreate,
-    //   update: loadingUpdate,
-    //   delete: loadingDelete,
-    // },
-    // done: {
-    //   all: doneAll,
-    //   one: doneOne,
-    //   create: doneCreate,
-    //   update: doneUpdate,
-    //   delete: doneDelete,
-    // },
-    // error: {
-    //   all: errorAll,
-    //   one: errorOne,
-    //   create: errorCreate,
-    //   update: errorUpdate,
-    //   delete: errorDelete,
-    // },
+    loading: {
+      all: loadingAll,
+      one: loadingOne,
+      create: loadingCreate,
+      update: loadingUpdate,
+      delete: loadingDelete,
+    },
+    done: {
+      all: doneAll,
+      one: doneOne,
+      create: doneCreate,
+      update: doneUpdate,
+      delete: doneDelete,
+    },
+    error: {
+      all: errorAll,
+      one: errorOne,
+      create: errorCreate,
+      update: errorUpdate,
+      delete: errorDelete,
+    },
   } as const;
 };
 

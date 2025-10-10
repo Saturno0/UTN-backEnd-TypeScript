@@ -161,7 +161,6 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
     return <div>Cargando producto...</div>;
   }
 
-  console.log(product.colores);
   return (
     <div className="product">
       <h1>Producto Destacado</h1>

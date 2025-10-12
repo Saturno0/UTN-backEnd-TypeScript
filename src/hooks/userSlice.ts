@@ -95,7 +95,7 @@ const persistUser = (state: UserState) => {
   const { nombre, email, activo, rol } = state;
   window.localStorage.setItem(
     STORAGE_KEY,
-    rol === "admin"? JSON.stringify({ nombre, email, activo, rol }) : JSON.stringify({ nombre, email, activo })
+    JSON.stringify({ nombre, email, activo, rol })
   );
 };
 
@@ -137,13 +137,19 @@ const userSlice = createSlice({
   reducers: {
     register: (
       state,
-      action: PayloadAction<{ nombre: string; email: string; password?: string, activo?: boolean, rol: string}>
+      action: PayloadAction<{
+        nombre: string;
+        email: string;
+        password?: string;
+        activo?: boolean;
+        rol?: string;
+      }>
     ) => {
       state.nombre = action.payload.nombre;
       state.email = action.payload.email;
       state.password = action.payload.password ?? "";
       state.activo = action.payload.activo ?? true;
-      state.rol = action.payload.rol;
+      state.rol = action.payload.rol ?? "user";
       persistUser(state);
     },
     logout: (state) => {
@@ -151,6 +157,7 @@ const userSlice = createSlice({
       state.email = "";
       state.password = "";
       state.activo = false;
+      state.rol = "";
       clearPersistedSession();
     },
   },

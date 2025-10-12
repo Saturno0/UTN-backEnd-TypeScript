@@ -35,6 +35,7 @@ export const API_CONFIG = {
     CREATE: '/createUser',
     LOGIN: '/logIn',
     UPDATE: '/update',
+    GET_ROLE: '/getRol/:id',
   }),
 
   CATEGORIES: createService('/categories', {

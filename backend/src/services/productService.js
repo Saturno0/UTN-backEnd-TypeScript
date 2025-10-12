@@ -138,9 +138,11 @@ export const updateProductService = async (productId, updateData) => {
 
   const updatedProduct = await Product.findByIdAndUpdate(
     { _id: productId },
-    { runValidators: true },
     updateData,
-    { new: true }
+    {
+      new: true,
+      runValidators: true,
+    }
   );
 
   return {

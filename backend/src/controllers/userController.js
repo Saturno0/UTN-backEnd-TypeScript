@@ -29,8 +29,7 @@ export const validate = async(req, res) => {
     try {
         const {email, password} = req.body;
         const result = await logIn(email, password);
-        console.log(result);
-        return res.status(200).json({ message: result.message, token: result.token });
+        return res.status(200).json(result);
     } catch (error) {
         if(error.statusCode === 400){
             return res.status(error.statusCode).json({message: error.message})
@@ -60,8 +59,7 @@ export const getRol = async(req,res) => {
     try {
         const { id } = req.params;
         const result = await getRolService(id);
-        console.log(result);
-        return res.status(200).json({ rol: result });
+        return res.status(200).json(result);
     } catch (error) {
         if(error.statusCode === 400){
             return res.status(error.statusCode).json({message: error.message})

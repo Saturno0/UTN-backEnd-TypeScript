@@ -10,12 +10,21 @@ interface LoginSuccess {
   message: string;
   token: string;
   expiresAt: number;
+  user?: LoginUserData;
 }
 
 interface LoginState {
   error: string | null;
   done: boolean;
   loading: boolean;
+}
+
+export interface LoginUserData {
+  id?: string;
+  nombre?: string;
+  email?: string;
+  rol?: string;
+  activo?: boolean;
 }
 
 const parseErrorMessage = async (response: Response): Promise<string> => {
@@ -94,7 +103,11 @@ const useLoginUser = () => {
         return undefined;
       }
 
-      const data = (await response.json()) as { message: string; token: string };
+      const data = (await response.json()) as {
+        message: string;
+        token: string;
+        user?: LoginUserData;
+      };
       const expiresAt = Date.now() + SESSION_DURATION_MS;
       persistSessionToken(data.token, expiresAt);
       setState({ error: null, done: true, loading: false });

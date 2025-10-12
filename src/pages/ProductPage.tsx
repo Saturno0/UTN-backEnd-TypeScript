@@ -18,7 +18,7 @@ const ProductPage = () => {
     const locationState = location.state as LocationState | null;
     const initialProduct = locationState?.producto ?? null;
 
-    const { fetchProductById, error } = useProducts({ autoFetch: false });
+    const { fetchProduct, error } = useProducts();
 
     const [product, setProduct] = useState<Product | null>(initialProduct);
     const [loading, setLoading] = useState<boolean>(!initialProduct && Boolean(id));
@@ -27,7 +27,7 @@ const ProductPage = () => {
     useEffect(() => {
         if (!product && id) {
             setLoading(true);
-            fetchProductById(id)
+            fetchProduct(id)
                 .then((fetchedProduct) => {
                     setProduct(fetchedProduct);
                     setStatus(null);
@@ -40,7 +40,7 @@ const ProductPage = () => {
                     setLoading(false);
                 });
         }
-    }, [fetchProductById, id, product]);
+    }, [fetchProduct, id, product]);
 
 
     const feedbackMessage = useMemo(() => {
@@ -48,7 +48,7 @@ const ProductPage = () => {
             return status;
         }
         if (error) {
-            return { message: error, type: 'error' as const };
+            return { message: error.one, type: 'error' as const };
         }
         return null;
     }, [error, status]);

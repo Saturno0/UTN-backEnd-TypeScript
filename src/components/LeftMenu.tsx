@@ -32,7 +32,7 @@ const LeftMenu: React.FC<LeftMenuProps> = ({ menuOpen, setMenuOpen, handleNaviga
                 <li className="links"><h3>Mas vendidos</h3></li>
                 {menuOpen && (
                     <li onClick={() => handleNavigation()}>
-                    <h3>{user.isRegistered? `${user.username}` : "Acceder"}</h3>
+                    <h3>{user.activo? `${user.nombre}` : "Acceder"}</h3>
                     </li>
                 )}
             </ul>

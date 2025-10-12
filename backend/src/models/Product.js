@@ -25,13 +25,13 @@ const productSchema = new Schema(
     precio_original: { type: Number, required: true, min: 0 },
 
     // Relación con Size: talles disponibles para el producto
-  tamaños: [
-    {
-      type: String,
-      enum: ['XS', 'S', 'M', 'L', 'XL'],
-      trim: true,
-    }
-  ],
+    tamaños: [
+      {
+        type: String,
+        enum: ['XS', 'S', 'M', 'L', 'XL'],
+        trim: true,
+      }
+    ],
 
     estado: {type: String, enum: ['Activo', 'Inactivo'], default: 'Activo', required: true},
 

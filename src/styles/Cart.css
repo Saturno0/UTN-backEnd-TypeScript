@@ -127,6 +127,13 @@
 .btn-remove:hover,
 .btn-clear:hover {
   background-color: #d93131;
+  transform: translateY(-1px)
+}
+
+.btn-remove:active,
+.btn-clear:active {
+  background-color: #d93131;
+  transform: translateY(1px)
 }
 
 .cart-summary {

@@ -8,7 +8,7 @@ const Profile = () => {
   const user = useSelector((state: RootState) => state.user);
 
   const [formData, setFormData] = useState({
-    username: "",
+    nombre: "",
     email: "",
     password: "",
   });
@@ -17,7 +17,7 @@ const Profile = () => {
 
   useEffect(() => {
     setFormData({
-      username: user.username,
+      nombre: user.nombre,
       email: user.email,
       password: "", // por seguridad no mostramos password
     });
@@ -41,12 +41,12 @@ const Profile = () => {
         {isEditing ? (
           <input
             type="text"
-            name="username"
-            value={formData.username}
+            name="nombre"
+            value={formData.nombre}
             onChange={handleChange}
           />
         ) : (
-          <span>{user.username}</span>
+          <span>{user.nombre}</span>
         )}
       </div>
       <div className="profile-field">

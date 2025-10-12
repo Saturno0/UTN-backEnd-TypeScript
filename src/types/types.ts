@@ -41,6 +41,7 @@ export interface Product {
   especificaciones: ProductSpecs;
   colores: ProductColor[];
   ingreso: string;
+  estado: string;
 }
 
 export interface CartState {
@@ -66,6 +67,7 @@ export interface UserState {
   nombre: string;
   email: string;
   password: string;
+  rol: string;
   activo: boolean;
 }
 
@@ -81,7 +83,7 @@ export interface ApiUser {
   _id?: string;
   nombre: string;
   email: string;
-  rol?: "user" | "admin";
+  rol: string;
   activo?: boolean;
   createdAt?: string;
   updatedAt?: string;

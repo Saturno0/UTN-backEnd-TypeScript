@@ -36,7 +36,7 @@ const Register: React.FC = () => {
       return;
     }
 
-    dispatch(register({ nombre, email, password, activo: true }));
+    dispatch(register({ nombre, email, password, activo: true, rol: "user" }));
     navigate(-1);
   };
 

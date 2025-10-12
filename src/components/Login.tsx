@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLoginUser } from "../hooks/users";
 import { register } from "../hooks/userSlice";
 import type { AppDispatch } from "../hooks/store";
+import type { LoginUserData } from "../hooks/users/useLoginUser";
 
 const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,7 +27,21 @@ const Login: React.FC = () => {
       return;
     }
 
-    dispatch(register({ nombre, email, password }));
+    const userData: LoginUserData | undefined = response.user;
+    const resolvedNombre = userData?.nombre ?? nombre;
+    const resolvedEmail = userData?.email ?? email;
+    const resolvedRol = userData?.rol ?? "user";
+    const resolvedActivo = userData?.activo ?? true;
+
+    dispatch(
+      register({
+        nombre: resolvedNombre,
+        email: resolvedEmail,
+        password,
+        activo: resolvedActivo,
+        rol: resolvedRol,
+      })
+    );
     navigate(-1);
   };
 

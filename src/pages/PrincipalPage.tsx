@@ -9,6 +9,7 @@ import type { Product } from "../types/types";
 function PrincipalPage() {
     const { fetchProducts, error: errorAll, loading: loadingAll, done: doneAll } = useProducts();
 
+
     const [ products, setProducts ] = useState<Product[]>([]);
     const [ loading, setLoading ] = useState<boolean>(true);
     const [error, setError] = useState<Error | any>();

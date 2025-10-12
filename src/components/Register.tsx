@@ -1,21 +1,27 @@
 import React, { useMemo, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useCreateUser } from "../hooks/users";
 import { register } from "../hooks/userSlice";
 import type { AppDispatch } from "../hooks/store";
+import useUsers from "../hooks/useUser.ts";
 
 const Register: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { createUser, loading, error } = useCreateUser();
+  
+  const {
+    createUser,
+    loading: { create: loadingCreate },
+    error: { create: errorCreate },
+  } = useUsers();
+
   const [email, setEmail] = useState("");
   const [nombre, setnombre] = useState("");
   const [password, setPassword] = useState("");
 
   const isSubmitDisabled = useMemo(() => {
-    return loading || !email || !nombre || !password;
-  }, [email, loading, password, nombre]);
+    return loadingCreate || !email || !nombre || !password;
+  }, [email, loadingCreate, password, nombre]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -30,7 +36,7 @@ const Register: React.FC = () => {
       return;
     }
 
-    dispatch(register({ nombre, email, password }));
+    dispatch(register({ nombre, email, password, activo: true }));
     navigate(-1);
   };
 
@@ -72,10 +78,10 @@ const Register: React.FC = () => {
           required
         />
 
-        {error && <p className="login-error">{error}</p>}
+        {errorCreate && <p className="login-error">{errorCreate}</p>}
 
         <button className="login-button" type="submit" disabled={isSubmitDisabled}>
-          {loading ? "Creando cuenta..." : "Registrarse"}
+          {loadingCreate ? "Creando cuenta..." : "Registrarse"}
         </button>
 
         <p className="login-helper-text">

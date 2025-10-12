@@ -3,6 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { UserState } from "../types/types";
 
 const STORAGE_KEY = "user";
+const SESSION_KEY = "token";
 
 const baseState: UserState = {
   nombre: "",
@@ -12,7 +13,63 @@ const baseState: UserState = {
   activo: false,
 };
 
-const readStoredUser = (): Partial<UserState> | null => {
+type StoredSessionResult =
+  | { status: "valid"; token: string; expiresAt?: number }
+  | { status: "expired" | "invalid" };
+
+const clearPersistedSession = () => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.localStorage.removeItem(STORAGE_KEY);
+  window.sessionStorage.removeItem(SESSION_KEY);
+};
+
+const readStoredSession = (): StoredSessionResult | null => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+
+  const raw = window.sessionStorage.getItem(SESSION_KEY);
+  if (!raw) {
+    return null;
+  }
+
+  try {
+    const candidate = JSON.parse(raw) as
+      | { value?: string; expiresAt?: number }
+      | string;
+
+    if (typeof candidate === "string") {
+      return { status: "valid", token: candidate };
+    }
+
+    if (typeof candidate?.value === "string") {
+      if (
+        typeof candidate.expiresAt === "number" &&
+        candidate.expiresAt <= Date.now()
+      ) {
+        return { status: "expired" };
+      }
+
+      return {
+        status: "valid",
+        token: candidate.value,
+        expiresAt: candidate.expiresAt,
+      };
+    }
+
+    return { status: "invalid" };
+  } catch (error) {
+    if (raw.trim().length > 0) {
+      return { status: "valid", token: raw };
+    }
+    return { status: "invalid" };
+  }
+};
+
+const readStoredUserData = (): Partial<UserState> | null => {
   if (typeof window === "undefined") {
     return null;
   }
@@ -35,31 +92,44 @@ const persistUser = (state: UserState) => {
     return;
   }
 
-  const { nombre, email, activo } = state;
+  const { nombre, email, activo, rol } = state;
   window.localStorage.setItem(
     STORAGE_KEY,
-    JSON.stringify({ nombre, email, activo })
+    rol === "admin"? JSON.stringify({ nombre, email, activo, rol }) : JSON.stringify({ nombre, email, activo })
   );
 };
 
-const removeStoredUser = () => {
+const resolveInitialState = (): UserState => {
   if (typeof window === "undefined") {
-    return;
+    return baseState;
   }
 
-  window.localStorage.removeItem(STORAGE_KEY);
-  window.sessionStorage.removeItem("token");
+  const session = readStoredSession();
+  if (!session) {
+    window.localStorage.removeItem(STORAGE_KEY);
+    return baseState;
+  }
+
+  if (session.status !== "valid") {
+    clearPersistedSession();
+    return baseState;
+  }
+
+  const storedUser = readStoredUserData();
+  if (!storedUser) {
+    return baseState;
+  }
+
+  return {
+    ...baseState,
+    ...storedUser,
+    activo: Boolean(
+      storedUser.activo ?? storedUser.nombre ?? storedUser.email
+    ),
+  };
 };
 
-const storedUser = readStoredUser();
-
-const initialState: UserState = storedUser
-  ? {
-      ...baseState,
-      ...storedUser,
-      activo: Boolean(storedUser.nombre || storedUser.email),
-    }
-  : baseState;
+const initialState: UserState = resolveInitialState();
 
 const userSlice = createSlice({
   name: "user",
@@ -67,12 +137,13 @@ const userSlice = createSlice({
   reducers: {
     register: (
       state,
-      action: PayloadAction<{ nombre: string; email: string; password?: string, activo?: boolean}>
+      action: PayloadAction<{ nombre: string; email: string; password?: string, activo?: boolean, rol: string}>
     ) => {
       state.nombre = action.payload.nombre;
       state.email = action.payload.email;
       state.password = action.payload.password ?? "";
       state.activo = action.payload.activo ?? true;
+      state.rol = action.payload.rol;
       persistUser(state);
     },
     logout: (state) => {
@@ -80,7 +151,7 @@ const userSlice = createSlice({
       state.email = "";
       state.password = "";
       state.activo = false;
-      removeStoredUser();
+      clearPersistedSession();
     },
   },
 });

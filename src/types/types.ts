@@ -83,7 +83,7 @@ export interface ApiUser {
   _id?: string;
   nombre: string;
   email: string;
-  rol?: "user" | "admin";
+  rol: string;
   activo?: boolean;
   createdAt?: string;
   updatedAt?: string;

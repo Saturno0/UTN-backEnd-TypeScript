@@ -40,7 +40,8 @@ const ProductsLister: React.FC<ProductsListerProps> = ( {productos} ) => {
         }
     }, []);
 
-    const isAdmin: boolean = (user.rol === "admin");
+    const isAdmin: boolean = (user.rol === 'admin');
+    // console.log(user.rol)
     return (
         productos.map((producto, index) => {
             const productId = typeof producto._id === "string"

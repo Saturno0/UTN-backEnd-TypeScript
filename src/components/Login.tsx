@@ -4,6 +4,15 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLoginUser } from "../hooks/users";
 import { register } from "../hooks/userSlice";
 import type { AppDispatch } from "../hooks/store";
+import { API_CONFIG, buildApiUrl } from "../config/api";
+import { decodeJwtPayload } from "../utils/jwt";
+import type { ApiUser } from "../types/types";
+
+interface AuthTokenPayload {
+  userId?: string;
+  userEmail?: string;
+  [key: string]: unknown;
+}
 
 const Login: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,7 +35,40 @@ const Login: React.FC = () => {
       return;
     }
 
-    dispatch(register({ nombre, email, password }));
+    const payload = decodeJwtPayload<AuthTokenPayload>(response.token);
+    let resolvedNombre = nombre;
+    let resolvedEmail = email;
+    let resolvedRol = "user";
+    let resolvedActivo = true;
+
+    if (payload?.userId) {
+      try {
+        const roleResponse = await fetch(
+          buildApiUrl(API_CONFIG.USERS.GET_ROLE).replace(":id", payload.userId)
+        );
+
+        if (roleResponse.ok) {
+          const userData = (await roleResponse.json()) as Partial<ApiUser>;
+
+          resolvedNombre = userData.nombre ?? resolvedNombre;
+          resolvedEmail = userData.email ?? resolvedEmail;
+          resolvedRol = userData.rol ?? resolvedRol;
+          resolvedActivo = userData.activo ?? resolvedActivo;
+        }
+      } catch (fetchError) {
+        console.warn("Failed to retrieve user role", fetchError);
+      }
+    }
+
+    dispatch(
+      register({
+        nombre: resolvedNombre,
+        email: resolvedEmail,
+        password,
+        activo: resolvedActivo,
+        rol: resolvedRol,
+      })
+    );
     navigate(-1);
   };
 

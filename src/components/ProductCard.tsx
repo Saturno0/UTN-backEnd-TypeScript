@@ -1,18 +1,31 @@
 import { Link } from 'react-router-dom';
 import type { Product } from '../types/types';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import useProducts from '../hooks/useProducts';
 
 interface ProductCardProps {
   producto: Product;
   admin: boolean;
+  onStatusChange?: (id: string, changes: Partial<Product>) => void;
+  onDelete?: (id: string) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ producto, admin }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  producto,
+  admin,
+  onStatusChange,
+  onDelete,
+}) => {
   const { updateProduct, deleteProduct } = useProducts();
 
   // Estado local de disponibilidad (derivado del estado del producto)
-  const [disponible, setDisponible] = useState<boolean>(producto.estado === 'Activo');
+  const [disponible, setDisponible] = useState<boolean>(
+    producto.estado === 'Activo'
+  );
+
+  useEffect(() => {
+    setDisponible(producto.estado === 'Activo');
+  }, [producto.estado]);
 
   // Normalizar ID a string (evita llamadas con ID vacío)
   const productId: string = useMemo(() => {
@@ -51,7 +64,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ producto, admin }) => {
     try {
       const response = await deleteProduct(productId);
       alert(response?.message || 'Producto eliminado correctamente.');
-      // Opcional: quitar la card del DOM desde el padre o refrescar lista
+      onDelete?.(productId);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error al eliminar el producto.';
       alert(message);
@@ -72,6 +85,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ producto, admin }) => {
       const payload = { estado: disponible ? 'Activo' : 'Inactivo' as const };
       const res = await updateProduct(productId, payload);
       alert(res?.message || 'Cambios guardados correctamente.');
+      onStatusChange?.(productId, payload);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Error al guardar los cambios.';
       alert(message);
@@ -104,6 +118,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ producto, admin }) => {
         />
         <p>{descripcion}</p>
         <p>Precio: ${producto.precio_actual}</p>
+
+        {admin && (
+          <p className={`status-indicator ${disponible ? 'status-active' : 'status-inactive'}`}>
+            Estado: {disponible ? 'Activo' : 'Inactivo'}
+          </p>
+        )}
 
         {admin && (
           <div className="admin-buttons">

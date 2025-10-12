@@ -94,14 +94,23 @@ export const updateUserService = async(idUser, updateData) => {
 }
 
 export const getRolService = async(idUser) => {
-    const userExist = await User.findOne({ _id: idUser });
+    const userExist = await User.findById(idUser);
 
     if(!userExist){
-        const error = new Error("The product you're trying to update does not exist")
+        const error = new Error("The user you're trying to query does not exist")
         error.statusCode = 400;
         throw error;
     }
 
-    const userRol = userExist.rol;
-    return { userRol };
+    const userObject = typeof userExist.toObject === 'function' ? userExist.toObject() : userExist;
+
+    const { nombre, email, rol, activo } = userObject;
+
+    return {
+        nombre,
+        email,
+        rol,
+        activo: Boolean(activo),
+        id: userObject._id?.toString?.() ?? userObject._id,
+    };
 }

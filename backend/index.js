@@ -20,8 +20,7 @@ const allowedOrigins = (CORS_ORIGIN || 'http://localhost:5173')
   .split(',')
   .map((origin) => origin.trim());
 
-app.use(
-  cors({
+app.use(cors({
     origin: allowedOrigins,
     credentials: true,
   })

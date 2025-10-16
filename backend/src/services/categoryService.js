@@ -21,7 +21,7 @@ export const createCategoryService = async (categoryData) => {
   const categoryExist = await Category.findOne({ nombre: categoryData.nombre });
 
   if (categoryExist) {
-    const error = new Error("Category already exist");
+    const error = new Error({ message: "Category already exist", detail: categoryExist});
     error.statusCode = 409;
     throw error;
   }
@@ -38,7 +38,7 @@ export const createCategoriesService = async (categoriesData) => {
   console.log(nombres);
     const existings = await Category.find({ nombre: { $in: nombres } });
     if (existings.length > 0) {
-      const error = new Error("Some category already exist");
+      const error = new Error(`Categories already exist`);
       error.statusCode = 409;
       
       throw error;

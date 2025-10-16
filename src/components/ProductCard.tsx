@@ -127,7 +127,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         {admin && (
           <div className="admin-buttons">
-            <button className="btn-remove" onClick={handleEliminarProducto}>
+            <button className="btn-remove-item" onClick={handleEliminarProducto}>
               Eliminar
             </button>
 

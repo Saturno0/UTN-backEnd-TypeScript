@@ -104,7 +104,7 @@ export const updateUserService = async(idUser, updateData) => {
 }
 
 export const getRolService = async(idUser) => {
-    const userExist = await User.findById(idUser);
+    const userExist = await User.findById(idUser).select('rol');
 
     if(!userExist){
         const error = new Error("The user you're trying to query does not exist")
@@ -112,15 +112,9 @@ export const getRolService = async(idUser) => {
         throw error;
     }
 
-    const userObject = typeof userExist.toObject === 'function' ? userExist.toObject() : userExist;
-
-    const { nombre, email, rol, activo } = userObject;
+    const { rol } = userExist;
 
     return {
-        nombre,
-        email,
-        rol,
-        activo: Boolean(activo),
-        id: userObject._id?.toString?.() ?? userObject._id,
+        rol
     };
 }

@@ -33,7 +33,7 @@ export interface Product {
   description: string;
   calificacion: number;
   opiniones: number;
-  stock: boolean;
+  stock: number;
   descuento: number;
   precio_actual: number;
   precio_original: number;

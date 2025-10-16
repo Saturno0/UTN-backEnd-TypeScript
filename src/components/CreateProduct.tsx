@@ -2,6 +2,7 @@ import React from "react";
 import type { Category, Product, ProductSpecs } from "../types/types";
 import CreateCategory from "./CreateCategory";
 import CreateProductForm from "./CreateProductForm";
+import "../styles/CreateProduct.css";
 
 interface CreateProductProps {
   product: Product;

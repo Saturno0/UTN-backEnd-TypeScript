@@ -1,5 +1,6 @@
 import CartPage from "./pages/CartPage"
 import CheckoutPage from "./pages/CheckoutPage"
+import CreateProductPage from "./pages/CreateProductPage"
 import FormPage from "./pages/FormPage"
 import LoginPage from "./pages/LoginPage"
 import NewInPage from "./pages/NewInPage"
@@ -22,6 +23,7 @@ function App() {
       <Route path='/newIn' element={<NewInPage />}/>
       <Route path='/profile' element={<ProfilePage />}/>
       <Route path='/register' element={<RegisterPage />}/>
+      <Route path='/create-product' element={<CreateProductPage />}/>
     </Routes>
   )
 }

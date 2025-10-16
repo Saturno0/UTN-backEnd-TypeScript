@@ -1,107 +1,179 @@
-import { useState } from "react";
-import type { Product, Category } from "../types/types";
+import { useEffect, useState } from "react";
+import type { Product, Category, ProductSpecs } from "../types/types";
 import useProducts from "../hooks/useProducts";
 import { useNavigate } from "react-router-dom";
 import useCategories from "../hooks/useCategories";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import CreateProduct from "../components/CreateProduct.tsx";
 
 const CreateProductPage: React.FC = () => {
-    const navigate = useNavigate();
-    const [category, setCategory] = useState<Category>({
-        nombre: "",
-        descripcion: "",
-    });
+  const navigate = useNavigate();
+  const [category, setCategory] = useState<Category>({
+    nombre: "",
+    descripcion: "",
+  });
 
-    const [especificaciones, setEspecificaciones] = useState({
-        material: "",
-        peso: "",
-        fabricado_en: "",
-    });
+  const [especificaciones, setEspecificaciones] = useState<ProductSpecs>({
+    material: "",
+    peso: "",
+    fabricado_en: "",
+  });
 
-    const [product, setProduct] = useState<Product>({
-        name: "",
-        image: "",
-        category: category.nombre,
-        description: "",
-        calificacion: 0,
-        opiniones: 0,
-        stock: 0,
-        descuento: 0,
-        precio_actual: 0,
-        precio_original: 0,
-        tamaños: [],
-        especificaciones: especificaciones,
-        colores: [],
-        ingreso: "",
-        estado: "",
-    })
+  const [product, setProduct] = useState<Product>({
+    name: "",
+    image: "",
+    category: "",
+    description: "",
+    calificacion: 0,
+    opiniones: 0,
+    stock: 0,
+    descuento: 0,
+    precio_actual: 0,
+    precio_original: 0,
+    tamaños: [],
+    especificaciones: {
+      material: "",
+      peso: "",
+      fabricado_en: "",
+    },
+    colores: [],
+    ingreso: "",
+    estado: "",
+  });
 
-    const {createProduct, error, loading, done} = useProducts();
+  const { createProduct, error, loading } = useProducts();
+  const {
+    createCategory,
+    error: categoryError,
+    loading: categoryLoading
+  } = useCategories();
 
-    const handleCreateProduct = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (product.name.trim() !== "") {
-            const response = await createProduct(product);
-            if (!response) {
-                alert("Error al crear el producto. " + error.create.message);
-            }
+  // Mantener el producto sincronizado con categoria y especificaciones
+  useEffect(() => {
+    setProduct((prev) => ({ ...prev, category: category.nombre }));
+  }, [category.nombre]);
 
-            if (done.create) {
-                alert(response.message);
-                setProduct({
-                    name: "",
-                    image: "",
-                    category: category.nombre,
-                    description: "",
-                    calificacion: 0,
-                    opiniones: 0,
-                    stock: 0,
-                    descuento: 0,
-                    precio_actual: 0,
-                    precio_original: 0,
-                    tamaños: [],
-                    especificaciones: especificaciones,
-                    colores: [],
-                    ingreso: "",
-                    estado: "",
-                });
+  useEffect(() => {
+    setProduct((prev) => ({ ...prev, especificaciones }));
+  }, [especificaciones]);
 
-                navigate(-1);
-            }
+  const handleChangeEspecificaciones = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setEspecificaciones((prev) => ({ ...prev, [name]: value } as ProductSpecs));
+  };
 
-        } else {
-            alert("Primero cree un producto antes de enviarlo.");
-        }
+  const handleChangeCategory = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setCategory((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleChangeProduct = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    // Parsear numéricos cuando corresponde
+    const numericFields = [
+      "calificacion",
+      "opiniones",
+      "stock",
+      "descuento",
+      "precio_actual",
+      "precio_original",
+    ];
+    const parsedValue = numericFields.includes(name)
+      ? Number(value) || 0
+      : value;
+    if (name === "tamaños") return; // este campo lo manejamos aparte como lista
+    setProduct((prev) => ({ ...prev, [name]: parsedValue } as Product));
+  };
+
+    const handleChangeSizes = (sizes: string[]) => {
+        setProduct((prev) => ({ ...prev, tamaños: sizes }));
+    };
+
+  const handleCreateProduct = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (product.name.trim() === "") {
+      alert("Primero complete los datos del producto.");
+      return;
     }
 
-    
-
-    const handleCreateCategory = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const {createCategory, error} = useCategories();
-        if (category.nombre.trim() !== "") {
-            const response = await createCategory(category);
-
-            if(!response) {
-                if(error.create.code === 409) {
-                    setCategory(error.create.detail);
-                    console.error("Error: " + error.create.message);
-                } else {
-                    alert("Error al crear la categoria. " + error.create.message);
-                }
-            } else {
-                alert(response.message);
-                setProduct({...product, category: category.nombre})
-            }
-        } else {
-            alert("Primero ingrese una categoria antes de enviar el formulario.");
-        }
+    const response = await createProduct(product);
+    if (!response) {
+      const errMsg =
+        (error.create as string | undefined) ?? "Error desconocido";
+      alert("Error al crear el producto: " + errMsg);
+      return;
     }
 
+    alert(response.message ?? "Producto creado correctamente.");
+    // Reset de formularios
+    setCategory({ nombre: "", descripcion: "" });
+    setEspecificaciones({ material: "", peso: "", fabricado_en: "" });
+    setProduct({
+      name: "",
+      image: "",
+      category: "",
+      description: "",
+      calificacion: 0,
+      opiniones: 0,
+      stock: 0,
+      descuento: 0,
+      precio_actual: 0,
+      precio_original: 0,
+      tamaños: [],
+      especificaciones: { material: "", peso: "", fabricado_en: "" },
+      colores: [],
+      ingreso: "",
+      estado: "",
+    });
 
-    return(
-        <>
-        </>
-    );
-}
+    navigate(-1);
+  };
+
+  const handleCreateCategory = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (category.nombre.trim() === "") {
+      alert("Primero ingrese un nombre de categoría.");
+      return;
+    }
+
+    const response = await createCategory(category);
+    if (!response) {
+      const errMsg =
+        (categoryError.create as string | undefined) ?? "Error desconocido";
+      alert("Error al crear la categoría: " + errMsg);
+      return;
+    }
+
+    alert(response.message ?? "Categoría creada correctamente.");
+    // Sincronizamos el nombre de categoría en el producto mediante el useEffect
+  };
+
+  return (
+    <>
+      <Navbar />
+            <CreateProduct
+                product={product}
+                category={category}
+                especificaciones={especificaciones}
+                onChangeProduct={handleChangeProduct}
+                onChangeCategory={handleChangeCategory}
+                onChangeSpecs={handleChangeEspecificaciones}
+                onSizesChange={handleChangeSizes}
+                onCreateProduct={handleCreateProduct}
+                onCreateCategory={handleCreateCategory}
+                loadingCreateProduct={loading.create}
+                loadingCreateCategory={categoryLoading.create}
+            />
+      <Footer />
+    </>
+  );
+};
 
 export default CreateProductPage;

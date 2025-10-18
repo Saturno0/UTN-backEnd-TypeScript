@@ -42,6 +42,9 @@ const CreateProductPage: React.FC = () => {
     estado: "",
   });
 
+  // Archivo de imagen seleccionado (para subir luego a AWS)
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
   const { createProduct, error, loading } = useProducts();
   const {
     createCategory,
@@ -72,14 +75,10 @@ const CreateProductPage: React.FC = () => {
     setCategory((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleChangeProduct = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChangeProduct = ( e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> ) => {
     const { name, value } = e.target;
     // Parsear numéricos cuando corresponde
     const numericFields = [
-      "calificacion",
-      "opiniones",
       "stock",
       "descuento",
       "precio_actual",
@@ -88,6 +87,18 @@ const CreateProductPage: React.FC = () => {
     const parsedValue = numericFields.includes(name)
       ? Number(value) || 0
       : value;
+    // Manejo especial de colores ingresados como texto separado por comas
+    if (name === "colores") {
+      const names = String(value)
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+      setProduct((prev) => ({
+        ...prev,
+        colores: names.map((n) => ({ name: n, cantidad: 0, stock: 0 })),
+      }));
+      return;
+    }
     if (name === "tamaños") return; // este campo lo manejamos aparte como lista
     setProduct((prev) => ({ ...prev, [name]: parsedValue } as Product));
   };
@@ -96,17 +107,30 @@ const CreateProductPage: React.FC = () => {
         setProduct((prev) => ({ ...prev, tamaños: sizes }));
     };
 
+  const handleChangeImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] ?? null;
+    setImageFile(file);
+    // Opcional: limpiar el campo de URL de imagen del producto
+    if (file) {
+      setProduct((prev) => ({ ...prev, image: "" }));
+    }
+  };
+
   const handleCreateProduct = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // Placeholder: archivo seleccionado para subir a AWS posteriormente
+    if (imageFile) {
+      console.log("Imagen seleccionada:", imageFile.name);
+    }
     if (product.name.trim() === "") {
       alert("Primero complete los datos del producto.");
       return;
     }
 
     const response = await createProduct(product);
+    console.log(response);
     if (!response) {
-      const errMsg =
-        (error.create as string | undefined) ?? "Error desconocido";
+      const errMsg = (error.create as string | undefined) ?? response.message;
       alert("Error al crear el producto: " + errMsg);
       return;
     }
@@ -166,6 +190,7 @@ const CreateProductPage: React.FC = () => {
                 onChangeCategory={handleChangeCategory}
                 onChangeSpecs={handleChangeEspecificaciones}
                 onSizesChange={handleChangeSizes}
+                onChangeImageFile={handleChangeImageFile}
                 onCreateProduct={handleCreateProduct}
                 onCreateCategory={handleCreateCategory}
                 loadingCreateProduct={loading.create}

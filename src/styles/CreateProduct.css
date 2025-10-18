@@ -1,14 +1,24 @@
 /* Create Product Page */
 .create-main {
   padding: 1rem;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row-reverse;
+  gap: 2rem;
+  padding-right: 10rem;
 }
 
 .create-section {
+  margin: 0 auto 2rem auto;
   margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  width: 25rem;
 }
 
 .create-section-spaced {
-  margin-top: 2rem;
+  margin: auto;
+  width: 35rem;
 }
 
 .create-form {

@@ -55,7 +55,8 @@ export const createProduct = async (req, res) => {
     if (error.statusCode === 409) {
       res.status(409).json(error.message);
     } else {
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: error.message });
+      console.log(error);
     }
   }
 };

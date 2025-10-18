@@ -6,7 +6,7 @@ const useCreateProduct = () => {
     const [done, setDone] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const createProduct = async (formData: Object) =>{
+    const createProduct = async (payload: Object) =>{
         setLoading(true);
         setError(null);
 
@@ -14,7 +14,7 @@ const useCreateProduct = () => {
             const response = await fetch(buildApiUrl(API_CONFIG.PRODUCTS.CREATE), {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(payload)
             });
 
             if (response.ok){

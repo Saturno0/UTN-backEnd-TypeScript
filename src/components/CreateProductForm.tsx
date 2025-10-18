@@ -9,6 +9,7 @@ interface CreateProductFormProps {
   ) => void;
   onChangeSpecs: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSizesChange: (value: string[]) => void;
+  onChangeImageFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
   product: Product;
   especificaciones: ProductSpecs;
   loadingCreateProduct?: boolean;
@@ -19,6 +20,7 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({
   onChangeProduct,
   onChangeSpecs,
   onSizesChange,
+  onChangeImageFile,
   product,
   especificaciones,
   loadingCreateProduct,
@@ -40,14 +42,13 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({
           required
         />
 
-        <label htmlFor="prod_image">Imagen (URL)</label>
+        <label htmlFor="prod_image">Imagen (archivo)</label>
         <input
           id="prod_image"
           name="image"
-          type="url"
-          value={product.image}
-          onChange={onChangeProduct}
-          placeholder="https://..."
+          type="file"
+          accept="image/*"
+          onChange={onChangeImageFile}
         />
 
         <label htmlFor="prod_desc">Descripción</label>
@@ -60,12 +61,45 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({
           rows={4}
         />
 
+        <label>Tamaños disponibles</label>
+        <div className="sizes-group">
+          {sizesOptions.map((size) => {
+            const checked = product.tamaños.includes(size);
+            return (
+              <label key={size} className="size-option">
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={(e) =>
+                    onSizesChange(
+                      e.target.checked
+                        ? [...product.tamaños, size]
+                        : product.tamaños.filter((s) => s !== size)
+                    )
+                  }
+                />
+                <span>{size}</span>
+              </label>
+            );
+          })}
+        </div>
+
         <label htmlFor="prod_category">Categoría seleccionada</label>
         <input
           id="prod_category"
           type="text"
           value={product.category}
           readOnly
+        />
+
+        <label htmlFor="prod_color">Colores</label>
+        <input 
+          id="prod_color"
+          name="colores"
+          type="text"
+          value={(product.colores || []).map((c: any) => c.name ?? c).join(", ")}
+          onChange={onChangeProduct}
+          placeholder="Colores del producto separados por comas"
         />
 
         <label htmlFor="prod_pactual">Precio actual</label>
@@ -108,48 +142,6 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({
           onChange={onChangeProduct}
         />
 
-        <label htmlFor="prod_op">Opiniones</label>
-        <input
-          id="prod_op"
-          name="opiniones"
-          type="number"
-          step="1"
-          value={product.opiniones}
-          onChange={onChangeProduct}
-        />
-
-        <label htmlFor="prod_calif">Calificación</label>
-        <input
-          id="prod_calif"
-          name="calificacion"
-          type="number"
-          step="0.1"
-          value={product.calificacion}
-          onChange={onChangeProduct}
-        />
-
-        <label>Tamaños disponibles</label>
-        <div className="sizes-group">
-          {sizesOptions.map((size) => {
-            const checked = product.tamaños.includes(size);
-            return (
-              <label key={size} className="size-option">
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  onChange={(e) =>
-                    onSizesChange(
-                      e.target.checked
-                        ? [...product.tamaños, size]
-                        : product.tamaños.filter((s) => s !== size)
-                    )
-                  }
-                />
-                <span>{size}</span>
-              </label>
-            );
-          })}
-        </div>
 
         <fieldset className="create-fieldset">
           <legend>Especificaciones</legend>

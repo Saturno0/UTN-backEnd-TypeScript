@@ -17,6 +17,7 @@ interface CreateProductProps {
   ) => void;
   onChangeSpecs: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSizesChange: (value: string[]) => void;
+  onChangeImageFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
 
   onCreateProduct: (
     e: React.FormEvent<HTMLFormElement>
@@ -37,6 +38,7 @@ const CreateProduct: React.FC<CreateProductProps> = ({
   onChangeCategory,
   onChangeSpecs,
   onSizesChange,
+  onChangeImageFile,
   onCreateProduct,
   onCreateCategory,
   loadingCreateProduct,
@@ -53,14 +55,13 @@ const CreateProduct: React.FC<CreateProductProps> = ({
         />
       </section>
 
-      <hr />
-
       <section className="create-section-spaced">
         <CreateProductForm
             onCreateProduct={onCreateProduct}
             onChangeProduct={onChangeProduct}
             onChangeSpecs={onChangeSpecs}
             onSizesChange={onSizesChange}
+            onChangeImageFile={onChangeImageFile}
             product={product}
             especificaciones={especificaciones}
             loadingCreateProduct={loadingCreateProduct}

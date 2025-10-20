@@ -51,6 +51,17 @@ const productSchema = new Schema(
     ],
 
     ingreso: { type: String, enum: ['nuevo', 'viejo'], default: 'nuevo' },
+
+    imageURL: {
+      type: String,
+      default: null,
+      validate: {
+        validator: function(v) {
+          return v === null || /^https?:\/\/.*\.amazonaws\.com\/.*$/.test(v);
+        },
+        message: "Invalid S3 image url"
+      }
+    }
   },
   { timestamps: true }
 );

@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
-import type { Product, Category, ProductSpecs } from "../types/types";
+import type {
+  Product,
+  Category,
+  ProductSpecs,
+  ProductColor,
+} from "../types/types";
 import useProducts from "../hooks/useProducts";
 import { useNavigate } from "react-router-dom";
 import useCategories from "../hooks/useCategories";
@@ -37,7 +42,7 @@ const CreateProductPage: React.FC = () => {
       peso: "",
       fabricado_en: "",
     },
-    colores: [],
+    colores: [{ name: "", cantidad: 0, stock: 0 }],
     ingreso: "",
     estado: "",
   });
@@ -51,6 +56,14 @@ const CreateProductPage: React.FC = () => {
     error: categoryError,
     loading: categoryLoading
   } = useCategories();
+
+  const calculateTotalStock = (colors: ProductColor[]): number =>
+    colors.reduce((sum, color) => {
+      if (!color.name || color.name.trim() === "") {
+        return sum;
+      }
+      return sum + (Number(color.stock) || 0);
+    }, 0);
 
   // Mantener el producto sincronizado con categoria y especificaciones
   useEffect(() => {
@@ -75,37 +88,54 @@ const CreateProductPage: React.FC = () => {
     setCategory((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleChangeProduct = ( e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> ) => {
+  const handleChangeProduct = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     // Parsear numéricos cuando corresponde
-    const numericFields = [
-      "stock",
-      "descuento",
-      "precio_actual",
-      "precio_original",
-    ];
+    const numericFields = ["descuento", "precio_actual", "precio_original"];
     const parsedValue = numericFields.includes(name)
       ? Number(value) || 0
       : value;
-    // Manejo especial de colores ingresados como texto separado por comas
-    if (name === "colores") {
-      const names = String(value)
-        .split(",")
-        .map((s) => s.trim())
-        .filter(Boolean);
-      setProduct((prev) => ({
-        ...prev,
-        colores: names.map((n) => ({ name: n, cantidad: 0, stock: 0 })),
-      }));
-      return;
-    }
     if (name === "tamaños") return; // este campo lo manejamos aparte como lista
     setProduct((prev) => ({ ...prev, [name]: parsedValue } as Product));
   };
 
-    const handleChangeSizes = (sizes: string[]) => {
-        setProduct((prev) => ({ ...prev, tamaños: sizes }));
-    };
+  const handleChangeSizes = (sizes: string[]) => {
+    setProduct((prev) => ({ ...prev, tamaños: sizes }));
+  };
+
+  const handleAddColor = () => {
+    setProduct((prev) => {
+      const prevColors = Array.isArray(prev.colores) ? prev.colores : [];
+      const nextColors = [
+        ...prevColors,
+        { name: "", cantidad: 0, stock: 0 },
+      ];
+      const totalStock = calculateTotalStock(nextColors);
+      return { ...prev, colores: nextColors, stock: totalStock };
+    });
+  };
+
+  const handleChangeColor = (
+    index: number,
+    field: keyof ProductColor,
+    value: string | number
+  ) => {
+    setProduct((prev) => {
+      const prevColors = Array.isArray(prev.colores) ? prev.colores : [];
+      const nextColors = prevColors.map((color, idx) => {
+        if (idx !== index) return color;
+        const nextValue =
+          field === "name"
+            ? String(value)
+            : Math.max(0, Number(value) || 0);
+        return { ...color, [field]: nextValue } as ProductColor;
+      });
+      const totalStock = calculateTotalStock(nextColors);
+      return { ...prev, colores: nextColors, stock: totalStock };
+    });
+  };
 
   const handleChangeImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
@@ -127,7 +157,17 @@ const CreateProductPage: React.FC = () => {
       return;
     }
 
-    const response = await createProduct(product);
+    const sanitizedColors = (product.colores ?? []).filter(
+      (color) => color.name && color.name.trim() !== ""
+    ) as ProductColor[];
+    const totalStock = calculateTotalStock(sanitizedColors);
+    const payload: Product = {
+      ...product,
+      colores: sanitizedColors,
+      stock: totalStock,
+    };
+
+    const response = await createProduct(payload);
     console.log(response);
     if (!response) {
       const errMsg = (error.create as string | undefined) ?? response.message;
@@ -152,7 +192,7 @@ const CreateProductPage: React.FC = () => {
       precio_original: 0,
       tamaños: [],
       especificaciones: { material: "", peso: "", fabricado_en: "" },
-      colores: [],
+      colores: [{ name: "", cantidad: 0, stock: 0 }],
       ingreso: "",
       estado: "",
     });
@@ -179,26 +219,28 @@ const CreateProductPage: React.FC = () => {
     // Sincronizamos el nombre de categoría en el producto mediante el useEffect
   };
 
-  return (
-    <>
-      <Navbar />
-            <CreateProduct
-                product={product}
-                category={category}
-                especificaciones={especificaciones}
-                onChangeProduct={handleChangeProduct}
-                onChangeCategory={handleChangeCategory}
-                onChangeSpecs={handleChangeEspecificaciones}
-                onSizesChange={handleChangeSizes}
-                onChangeImageFile={handleChangeImageFile}
-                onCreateProduct={handleCreateProduct}
-                onCreateCategory={handleCreateCategory}
-                loadingCreateProduct={loading.create}
-                loadingCreateCategory={categoryLoading.create}
-            />
-      <Footer />
-    </>
-  );
+    return (
+      <>
+        <Navbar />
+        <CreateProduct
+          product={product}
+          category={category}
+          especificaciones={especificaciones}
+          onChangeProduct={handleChangeProduct}
+          onChangeCategory={handleChangeCategory}
+          onChangeSpecs={handleChangeEspecificaciones}
+          onSizesChange={handleChangeSizes}
+          onChangeImageFile={handleChangeImageFile}
+          onAddColor={handleAddColor}
+          onChangeColor={handleChangeColor}
+          onCreateProduct={handleCreateProduct}
+          onCreateCategory={handleCreateCategory}
+          loadingCreateProduct={loading.create}
+          loadingCreateCategory={categoryLoading.create}
+        />
+        <Footer />
+      </>
+    );
 };
 
 export default CreateProductPage;

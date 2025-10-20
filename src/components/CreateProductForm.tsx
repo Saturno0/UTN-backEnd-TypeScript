@@ -1,4 +1,4 @@
-import type { Product, ProductSpecs } from "../types/types";
+import type { Product, ProductColor, ProductSpecs } from "../types/types";
 
 interface CreateProductFormProps {
   onCreateProduct: (
@@ -10,6 +10,12 @@ interface CreateProductFormProps {
   onChangeSpecs: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSizesChange: (value: string[]) => void;
   onChangeImageFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onAddColor: () => void;
+  onChangeColor: (
+    index: number,
+    field: keyof ProductColor,
+    value: string | number
+  ) => void;
   product: Product;
   especificaciones: ProductSpecs;
   loadingCreateProduct?: boolean;
@@ -21,12 +27,15 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({
   onChangeSpecs,
   onSizesChange,
   onChangeImageFile,
+  onAddColor,
+  onChangeColor,
   product,
   especificaciones,
   loadingCreateProduct,
 }) => {
 
-    const sizesOptions = ["XS", "S", "M", "L", "XL", "XXL"];
+  const sizesOptions = ["XS", "S", "M", "L", "XL", "XXL"];
+  const colors = Array.isArray(product.colores) ? product.colores : [];
   return (
     <>
       <h2>Crear producto</h2>
@@ -92,15 +101,57 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({
           readOnly
         />
 
-        <label htmlFor="prod_color">Colores</label>
-        <input 
-          id="prod_color"
-          name="colores"
-          type="text"
-          value={(product.colores || []).map((c: any) => c.name ?? c).join(", ")}
-          onChange={onChangeProduct}
-          placeholder="Colores del producto separados por comas"
-        />
+        <label>Colores</label>
+        <div className="color-rows">
+          {colors.length === 0 && (
+            <button
+              type="button"
+              className="color-add"
+              onClick={onAddColor}
+              aria-label="Agregar color"
+            >
+              +
+            </button>
+          )}
+          {colors.map((color, index) => (
+            <div className="color-row" key={`color-${index}`}>
+              <input
+                type="text"
+                value={color.name ?? ""}
+                onChange={(e) => onChangeColor(index, "name", e.target.value)}
+                placeholder="Nombre"
+              />
+              <input
+                type="number"
+                min={0}
+                value={color.cantidad ?? 0}
+                onChange={(e) =>
+                  onChangeColor(index, "cantidad", Number(e.target.value) || 0)
+                }
+                placeholder="Cantidad"
+              />
+              <input
+                type="number"
+                min={0}
+                value={color.stock ?? 0}
+                onChange={(e) =>
+                  onChangeColor(index, "stock", Number(e.target.value) || 0)
+                }
+                placeholder="Stock"
+              />
+              {index === colors.length - 1 && (
+                <button
+                  type="button"
+                  className="color-add"
+                  onClick={onAddColor}
+                  aria-label="Agregar color"
+                >
+                  +
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
 
         <label htmlFor="prod_pactual">Precio actual</label>
         <input
@@ -129,16 +180,6 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({
           type="number"
           step="1"
           value={product.descuento}
-          onChange={onChangeProduct}
-        />
-
-        <label htmlFor="prod_stock">Stock</label>
-        <input
-          id="prod_stock"
-          name="stock"
-          type="number"
-          step="1"
-          value={product.stock}
           onChange={onChangeProduct}
         />
 

@@ -25,8 +25,8 @@ export const getAllProducts = async (req, res) => {
 export const getAllColorsByProduct = async (req,res) => {
   try {
     const { id } = req.params;
-    const response = getAllColorsByProductService(id);
-    req.status(200).json(response);
+    const response = await getAllColorsByProductService(id);
+    res.status(200).json(response);
   } catch (error) {
     res.status(error.statusCode === 204? 204 : 500).json(error.message);
   }
@@ -49,6 +49,7 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
   try {
     const productData = req.body;
+    console.log(productData);
     const response = await createProductService(productData);
     res.status(200).json(response);
   } catch (error) {

@@ -32,7 +32,7 @@ const CreateProductPage: React.FC = () => {
     description: "",
     calificacion: 0,
     opiniones: 0,
-    stock: 0,
+    stock: false,
     descuento: 0,
     precio_actual: 0,
     precio_original: 0,
@@ -62,7 +62,7 @@ const CreateProductPage: React.FC = () => {
       if (!color.name || color.name.trim() === "") {
         return sum;
       }
-      return sum + (Number(color.stock) || 0);
+      return sum + (Number(color.cantidad) || 0);
     }, 0);
 
   // Mantener el producto sincronizado con categoria y especificaciones
@@ -113,7 +113,7 @@ const CreateProductPage: React.FC = () => {
         { name: "", cantidad: 0, stock: 0 },
       ];
       const totalStock = calculateTotalStock(nextColors);
-      return { ...prev, colores: nextColors, stock: totalStock };
+      return { ...prev, colores: nextColors, stock: totalStock > 0 ? true : false };
     });
   };
 
@@ -133,7 +133,7 @@ const CreateProductPage: React.FC = () => {
         return { ...color, [field]: nextValue } as ProductColor;
       });
       const totalStock = calculateTotalStock(nextColors);
-      return { ...prev, colores: nextColors, stock: totalStock };
+      return { ...prev, colores: nextColors, stock: totalStock > 0 ? true : false };
     });
   };
 
@@ -164,7 +164,8 @@ const CreateProductPage: React.FC = () => {
     const payload: Product = {
       ...product,
       colores: sanitizedColors,
-      stock: totalStock,
+      stock: totalStock > 0? true : false,
+      estado: "Activo",
     };
 
     const response = await createProduct(payload);
@@ -186,7 +187,7 @@ const CreateProductPage: React.FC = () => {
       description: "",
       calificacion: 0,
       opiniones: 0,
-      stock: 0,
+      stock: false,
       descuento: 0,
       precio_actual: 0,
       precio_original: 0,

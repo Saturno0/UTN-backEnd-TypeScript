@@ -130,15 +130,6 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({
                 }
                 placeholder="Cantidad"
               />
-              <input
-                type="number"
-                min={0}
-                value={color.stock ?? 0}
-                onChange={(e) =>
-                  onChangeColor(index, "stock", Number(e.target.value) || 0)
-                }
-                placeholder="Stock"
-              />
               {index === colors.length - 1 && (
                 <button
                   type="button"

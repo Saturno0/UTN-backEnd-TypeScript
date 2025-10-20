@@ -1,5 +1,6 @@
 import { Product } from "../models/Product.js";
 import { findProductById } from "../utils/helpers.js";
+import { findCategoryByName } from "./categoryService.js";
 
 const productPopulateCategory = { path: "category", select: "nombre" };
 
@@ -33,7 +34,7 @@ export const getAllColorsByProductService =  async(idProduct) => {
 
   if(!producExist) {
     const error = new Error("No existing product");
-    error.statusCode(204);
+    error.statusCode = 204;
     throw error;
   }
 
@@ -81,11 +82,31 @@ export const createProductService = async (productData) => {
     throw error;
   }
 
-  const colorDuplicate = productExist.colores.filter(
-    (color, index) => productExist.colores.indexOf(color) !== index
-  );
+  const category = await findCategoryByName(productData.category);
 
-  const newProduct = new Product(...productData);
+  if (category) {
+    const idCategory = category._id;
+    productData.category = idCategory;
+  }
+
+  // Validate duplicate colors in incoming data (by name)
+  if (Array.isArray(productData?.colores)) {
+    const seen = new Set();
+    const duplicates = [];
+    for (const c of productData.colores) {
+      const key = typeof c === "string" ? c.trim().toLowerCase() : String(c?.name || "").trim().toLowerCase();
+      if (!key) continue;
+      if (seen.has(key)) duplicates.push(key);
+      seen.add(key);
+    }
+    if (duplicates.length > 0) {
+      const error = new Error("Duplicate colors in payload: " + [...new Set(duplicates)].join(", "));
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+
+  const newProduct = new Product(productData);
 
   await newProduct.save();
 

@@ -33,6 +33,14 @@ export const createCategoryService = async (categoryData) => {
   return { message: "Category created successfully" };
 };
 
+export const findCategoryByName = async (name) => {
+  const category = await Category.findOne({nombre: name});
+  if (!category) {
+    return false;
+  }
+  return category?._id;
+}
+
 export const createCategoriesService = async (categoriesData) => {
   const nombres = categoriesData.map((c) => c.nombre);
   console.log(nombres);

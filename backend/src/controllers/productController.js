@@ -48,8 +48,12 @@ export const getProductById = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
-    const productData = req.body;
-    console.log(productData);
+    const hasImage = req.imageUrl || req.body.imageUrl;
+    const productData = {
+      ...req.body,
+      imageUrl: hasImage || null
+    };
+
     const response = await createProductService(productData);
     res.status(200).json(response);
   } catch (error) {

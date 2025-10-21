@@ -1,7 +1,7 @@
 import multer from "multer";
 import sharp from "sharp";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { s3Client } from "../config/aws";
+import { s3Client } from "../config/aws.js";
 
 const storage = multer.memoryStorage();
 
@@ -37,7 +37,7 @@ export const uploadProductImage = async (req, res, next) => {
             ContentType: 'image/jpeg'
         }
 
-        const command = newPutObjectCommand(uploadParams);
+        const command = new PutObjectCommand(uploadParams);
         await s3Client.send(command);
 
         // agregamos url de la imagen al request

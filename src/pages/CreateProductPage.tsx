@@ -27,7 +27,7 @@ const CreateProductPage: React.FC = () => {
 
   const [product, setProduct] = useState<Product>({
     name: "",
-    image: "",
+    imageUrl: "",
     category: "",
     description: "",
     calificacion: 0,
@@ -142,7 +142,7 @@ const CreateProductPage: React.FC = () => {
     setImageFile(file);
     // Opcional: limpiar el campo de URL de imagen del producto
     if (file) {
-      setProduct((prev) => ({ ...prev, image: "" }));
+      setProduct((prev) => ({ ...prev, imageUrl: "" }));
     }
   };
 
@@ -166,6 +166,7 @@ const CreateProductPage: React.FC = () => {
       colores: sanitizedColors,
       stock: totalStock > 0? true : false,
       estado: "Activo",
+      ingreso: 'nuevo',
     };
 
     const response = await createProduct(payload);
@@ -182,7 +183,7 @@ const CreateProductPage: React.FC = () => {
     setEspecificaciones({ material: "", peso: "", fabricado_en: "" });
     setProduct({
       name: "",
-      image: "",
+      imageUrl: "",
       category: "",
       description: "",
       calificacion: 0,

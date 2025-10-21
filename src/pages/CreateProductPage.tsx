@@ -27,6 +27,7 @@ const CreateProductPage: React.FC = () => {
 
   const [product, setProduct] = useState<Product>({
     name: "",
+    image: new File([], ""),
     imageUrl: "",
     category: "",
     description: "",
@@ -149,9 +150,7 @@ const CreateProductPage: React.FC = () => {
   const handleCreateProduct = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Placeholder: archivo seleccionado para subir a AWS posteriormente
-    if (imageFile) {
-      console.log("Imagen seleccionada:", imageFile.name);
-    }
+    // Si hay imagen, se enviará como FormData desde el hook
     if (product.name.trim() === "") {
       alert("Primero complete los datos del producto.");
       return;
@@ -169,7 +168,7 @@ const CreateProductPage: React.FC = () => {
       ingreso: 'nuevo',
     };
 
-    const response = await createProduct(payload);
+    const response = await createProduct(payload, imageFile);
     console.log(response);
     if (!response) {
       const errMsg = (error.create as string | undefined) ?? response.message;
@@ -183,6 +182,7 @@ const CreateProductPage: React.FC = () => {
     setEspecificaciones({ material: "", peso: "", fabricado_en: "" });
     setProduct({
       name: "",
+      image: new File([], ""),
       imageUrl: "",
       category: "",
       description: "",

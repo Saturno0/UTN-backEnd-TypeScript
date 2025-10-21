@@ -28,6 +28,7 @@ export interface Product {
   _id?: string;
   id?: string | number;
   name: string;
+  image: File,
   imageUrl: string;
   category: string;
   description: string;

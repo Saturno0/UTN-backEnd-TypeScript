@@ -160,7 +160,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
   if (!product || !Array.isArray(product.colores)) {
     return <div>Cargando producto...</div>;
   }
-  console.log(product.imageUrl)
+  
   return (
     <div className="product">
       <h1>Producto Destacado</h1>

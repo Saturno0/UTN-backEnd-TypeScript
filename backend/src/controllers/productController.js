@@ -49,9 +49,33 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
   try {
     const hasImage = req.imageUrl || req.body.imageUrl;
+
+    // Normalizar campos que llegan como strings en multipart/form-data
+    const parseMaybeJson = (v) => {
+      if (typeof v !== 'string') return v;
+      try { return JSON.parse(v); } catch { return v; }
+    };
+
+    const coerceNumber = (v) => typeof v === 'string' ? Number(v) : v;
+    const coerceBoolean = (v) => {
+      if (typeof v === 'boolean') return v;
+      if (typeof v === 'string') return v === 'true';
+      return Boolean(v);
+    };
+
+    const raw = { ...req.body };
     const productData = {
-      ...req.body,
-      imageUrl: hasImage || null
+      ...raw,
+      colores: parseMaybeJson(raw.colores) ?? raw.colores,
+      especificaciones: parseMaybeJson(raw.especificaciones) ?? raw.especificaciones,
+      tamaños: parseMaybeJson(raw.tamaños) ?? raw.tamaños,
+      precio_actual: coerceNumber(raw.precio_actual),
+      precio_original: coerceNumber(raw.precio_original),
+      descuento: coerceNumber(raw.descuento),
+      calificacion: coerceNumber(raw.calificacion),
+      opiniones: coerceNumber(raw.opiniones),
+      stock: raw.stock !== undefined ? coerceBoolean(raw.stock) : raw.stock,
+      imageUrl: hasImage || null,
     };
 
     const response = await createProductService(productData);

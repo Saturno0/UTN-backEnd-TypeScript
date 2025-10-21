@@ -51,7 +51,7 @@ const productSchema = new Schema(
 
     ingreso: { type: String, enum: ['nuevo', 'viejo'], default: 'nuevo' },
 
-    imageURL: {
+    imageUrl: {
       type: String,
       default: null,
       validate: {

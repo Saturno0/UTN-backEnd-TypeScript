@@ -3,11 +3,11 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import session from 'express-session';
 
-import { connectDB } from './db.js';
-import { JWT_SECRET, PORT } from './config.js';
-import { categoryRouter } from './src/routes/categoryRoute.js';
-import { productRouter } from './src/routes/productRoute.js';
-import { userRoute } from './src/routes/userRoute.js';
+import { connectDB } from '../db.js';
+import { JWT_SECRET, PORT } from '../config.js';
+import { categoryRouter } from '../src/routes/categoryRoute.js';
+import { productRouter } from '../src/routes/productRoute.js';
+import { userRoute } from '../src/routes/userRoute.js';
 
 const app = express();
 

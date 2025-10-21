@@ -112,7 +112,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
       <div className="card">
         <h2>{producto.name}</h2>
         <img
-          src={producto.image}
+          src={producto.imageUrl}
           alt={`imagen de ${producto.name}`}
           loading="lazy"
         />

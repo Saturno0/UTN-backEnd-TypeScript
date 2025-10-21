@@ -72,7 +72,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
             color: colorName,
             price: product.precio_actual,
             quantity: 1,
-            image: product.image,
+            image: product.imageUrl,
           })
         );
       }
@@ -166,7 +166,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
       <h1>Producto Destacado</h1>
       <div className="product-details">
         <div className="product-image">
-          <img src={product.image} alt={product.name} />
+          <img src={product.imageUrl} alt={product.name} />
         </div>
         <div className="product-info">
           <ProductInfo product={product} />

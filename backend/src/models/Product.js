@@ -15,7 +15,6 @@ const productSchema = new Schema(
   {
     // Nota: Mongo usa _id. Si necesitas portar `id` numérico del JSON, puedes usar un campo separado.
     name: { type: String, required: true, trim: true },
-    image: { type: String, required: true, trim: true },
     calificacion: { type: Number, default: 0, min: 0, max: 5 },
     opiniones: { type: Number, default: 0, min: 0 },
     description: { type: String, trim: true },
@@ -65,5 +64,35 @@ const productSchema = new Schema(
   },
   { timestamps: true }
 );
+
+productSchema.methods.decreaseColorStock = async function(colorName, quantity) {
+  if(quantity <= 0){
+    throw new Error("Amount has to be a positive value")
+  }
+
+  const color = this.colores.find(c => c.name === colorName);
+  if (!color) {
+    throw new Error("Color not found");
+  }
+
+  if(color.cantidad < quantity) {
+      throw new Error("Not enough quantity")
+  }
+
+  // Utilizar updateOne para actualizar el stock
+  const result = await this.model('Product').updateOne(
+      { _id: this._id, "colores.name": colorName },
+      { $inc: { "colores.$.cantidad": -quantity } }
+  );
+
+  console.log({result})
+
+  if(result.modifiedCount === 0){
+      throw new Error("Failed to update stock")
+  }
+
+  // Actualizar el stock general del producto
+  this.stock = this.colores.map(c => c.cantidad).reduce((acc, curr) => acc + curr, 0) > 0? true : false;
+}
 
 export const Product = models.Product || model('Product', productSchema);

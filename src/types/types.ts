@@ -28,7 +28,7 @@ export interface Product {
   _id?: string;
   id?: string | number;
   name: string;
-  image: string;
+  imageUrl: string;
   category: string;
   description: string;
   calificacion: number;

@@ -1,6 +1,7 @@
 import { Product } from "../models/Product.js";
 import { findProductById } from "../utils/helpers.js";
 import { findCategoryByName } from "./categoryService.js";
+import { deleteImageFromS3, generateSignedUrl } from "./imageService.js";
 
 const productPopulateCategory = { path: "category", select: "nombre" };
 
@@ -106,6 +107,8 @@ export const createProductService = async (productData) => {
     }
   }
 
+  productData.imageUrl = await generateSignedUrl(productData.imageUrl);
+
   const newProduct = new Product(productData);
 
   await newProduct.save();
@@ -174,7 +177,13 @@ export const updateProductService = async (productId, updateData) => {
 
 export const deleteProductService = async (id) => {
   const product = await findProductById(id);
+  if(!product) {
+    const error = new Error("No product existing");
+    error.statusCode = 404;
+    throw error;
+  }
 
+  await deleteImageFromS3(product.imageUrl);
   await Product.deleteOne({ _id: id });
 
   return { message: "Product deleted successfully" };

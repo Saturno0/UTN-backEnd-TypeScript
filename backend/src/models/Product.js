@@ -42,14 +42,10 @@ const productSchema = new Schema(
 
     // Colores disponibles (estructura plana para facilitar su edición desde el frontend)
     colores: [{
-      type: Array,
-      items: {
         name: { type: String, required: true, trim: true },
-        cantidad: { type: Number, required: true, default: 0, min: 0 },
         stock: { type: Number, required: true, default: 0, min: 0 },
-      },
-      required: true
-    }],
+      }
+    ],
 
     ingreso: { type: String, enum: ['nuevo', 'viejo'], default: 'nuevo' },
 

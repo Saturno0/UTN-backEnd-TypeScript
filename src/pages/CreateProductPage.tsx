@@ -69,7 +69,9 @@ const CreateProductPage: React.FC = () => {
       if (!color.name || color.name.trim() === "") {
         return sum;
       }
-      return sum + (Number(color.cantidad) || 0);
+      // Para creación, usamos el valor ingresado como stock por color
+      const perColorStock = (Number(color.stock) || 0);
+      return sum + perColorStock;
     }, 0);
 
   // Mantener el producto sincronizado con categoria y especificaciones
@@ -168,7 +170,8 @@ const CreateProductPage: React.FC = () => {
 
     const sanitizedColors = (product.colores ?? [])
       .filter((color) => color.name && color.name.trim() !== "")
-      .map((c) => ({ name: c.name.trim(), cantidad: Number(c.cantidad) || 0 })) as unknown as ProductColor[];
+      // Ajuste: el modelo espera 'stock' persistido; 'cantidad' se usa solo en el front
+      .map((c) => ({ name: c.name.trim(), stock: c.cantidad || 0 })) as unknown as ProductColor[];
     const totalStock = calculateTotalStock(sanitizedColors);
     const precioFinal: number = calculateFinalPrice();
     const payload: Product = {

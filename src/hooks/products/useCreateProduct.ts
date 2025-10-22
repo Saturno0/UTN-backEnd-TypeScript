@@ -13,6 +13,7 @@ const useCreateProduct = () => {
         try {
             // Enviar como FormData para permitir archivo + datos
             const form = new FormData();
+            console.log(form)
 
             // Adjuntar archivo de imagen si existe (clave esperada por el backend: 'image')
             if (imageFile) {

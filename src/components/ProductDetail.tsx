@@ -1,14 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useMemo, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { addToCart } from '../hooks/cartSlice';
-import type { Product, ProductColor } from '../types/types';
-import ProductColors from './ProductColors';
-import ProductInfo from './ProductInfo';
-import type { RootState } from '../hooks/store';
-import useProducts from '../hooks/useProducts';
-import EditingProduct from './EditingProductColors';
-import EditingProductData from './EditingProductData';
+import { addToCart } from "../hooks/cartSlice";
+import type { Product, ProductColor } from "../types/types";
+import ProductColors from "./ProductColors";
+import ProductInfo from "./ProductInfo";
+import type { RootState } from "../hooks/store";
+import useProducts from "../hooks/useProducts";
+import EditingProduct from "./EditingProductColors";
+import EditingProductData from "./EditingProductData";
 
 interface ProductDetailProp {
   product: Product;
@@ -26,14 +26,15 @@ const buildQuantities = (colors: ProductColor[]) =>
 
 const normalizeColorField = (value: number | string) => {
   const numericValue = Number(value);
-  return Number.isFinite(numericValue) && numericValue >= 0
-    ? numericValue
-    : 0;
+  return Number.isFinite(numericValue) && numericValue >= 0 ? numericValue : 0;
 };
 
-const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }) => {
+const ProductDetail: React.FC<ProductDetailProp> = ({
+  product,
+  onUpdateProduct,
+}) => {
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.user); 
+  const user = useSelector((state: RootState) => state.user);
   const isAdmin = user.rol === "admin";
   const { updateProduct } = useProducts();
 
@@ -41,10 +42,10 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
 
   const productId = useMemo(() => {
     const p = currentProduct;
-    if (typeof p._id === 'string') return p._id;
-    if (typeof p.id === 'number') return p.id.toString();
-    if (typeof p.id === 'string') return p.id;
-    return '';
+    if (typeof p._id === "string") return p._id;
+    if (typeof p.id === "number") return p.id.toString();
+    if (typeof p.id === "string") return p.id;
+    return "";
   }, [currentProduct._id, (currentProduct as any).id]);
 
   const [quantities, setQuantities] = useState<Record<string, number>>({});
@@ -60,13 +61,13 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
   // Admin: edición de info general
   const [isEditingInfo, setIsEditingInfo] = useState(false);
   const [editableInfo, setEditableInfo] = useState({
-    name: currentProduct.name || '',
-    description: currentProduct.description || '',
+    name: currentProduct.name || "",
+    description: currentProduct.description || "",
     precio_original: currentProduct.precio_original || 0,
     descuento: currentProduct.descuento || 0,
     precio_actual: currentProduct.precio_actual || 0,
     stock: Boolean(currentProduct.stock),
-    estado: currentProduct.estado || 'Activo',
+    estado: currentProduct.estado || "Activo",
   });
 
   useEffect(() => {
@@ -81,13 +82,13 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
       }
     }
     setEditableInfo({
-      name: currentProduct.name || '',
-      description: currentProduct.description || '',
+      name: currentProduct.name || "",
+      description: currentProduct.description || "",
       precio_original: currentProduct.precio_original || 0,
       descuento: currentProduct.descuento || 0,
       precio_actual: currentProduct.precio_actual || 0,
       stock: Boolean(currentProduct.stock),
-      estado: currentProduct.estado || 'Activo',
+      estado: currentProduct.estado || "Activo",
     });
   }, [currentProduct, isEditingColors]);
 
@@ -116,7 +117,11 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
       }
     });
 
-    setQuantities(buildQuantities(Array.isArray(currentProduct.colores) ? currentProduct.colores : []));
+    setQuantities(
+      buildQuantities(
+        Array.isArray(currentProduct.colores) ? currentProduct.colores : []
+      )
+    );
   };
 
   const totalQty = Object.values(quantities).reduce((sum, q) => sum + q, 0);
@@ -131,19 +136,22 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
     const base = Number(editableInfo.precio_original) || 0;
     const off = Number(editableInfo.descuento) || 0;
     const final = base - base * (off / 100);
-    setEditableInfo((prev) => ({ ...prev, precio_actual: Math.max(0, Number(final.toFixed(2))) }));
+    setEditableInfo((prev) => ({
+      ...prev,
+      precio_actual: Math.max(0, Number(final.toFixed(2))),
+    }));
   }, [editableInfo.precio_original, editableInfo.descuento, isEditingInfo]);
 
   const handleColorFieldChange = (
     index: number,
-    field: keyof Pick<ProductColor, 'name' | 'cantidad' | 'stock'>,
+    field: keyof Pick<ProductColor, "name" | "cantidad" | "stock">,
     value: string | number
   ) => {
     setEditableColors((prev) =>
       prev.map((color, colorIndex) => {
         if (colorIndex !== index) return color;
 
-        if (field === 'name') {
+        if (field === "name") {
           return { ...color, name: String(value) };
         }
 
@@ -156,14 +164,13 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
   };
 
   const handleAddColorRow = () => {
-    setEditableColors((prev) => [
-      ...prev,
-      { name: '', cantidad: 0, stock: 0 },
-    ]);
+    setEditableColors((prev) => [...prev, { name: "", cantidad: 0, stock: 0 }]);
   };
 
   const handleRemoveColorRow = (index: number) => {
-    setEditableColors((prev) => prev.filter((_, colorIndex) => colorIndex !== index));
+    setEditableColors((prev) =>
+      prev.filter((_, colorIndex) => colorIndex !== index)
+    );
   };
 
   const handleSaveColors = async () => {
@@ -172,7 +179,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
     setIsSavingColors(true);
 
     const sanitizedColors = editableColors
-      .filter((color) => color.name.trim() !== '')
+      .filter((color) => color.name.trim() !== "")
       .map((color) => ({
         name: color.name.trim(),
         cantidad: normalizeColorField(color.cantidad),
@@ -193,9 +200,9 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
       });
 
       const nextColors =
-        (updatedProduct && Array.isArray((updatedProduct as any).colores)
+        updatedProduct && Array.isArray((updatedProduct as any).colores)
           ? (updatedProduct as any).colores
-          : sanitizedColors);
+          : sanitizedColors;
 
       setEditableColors(nextColors);
       setQuantities(buildQuantities(nextColors));
@@ -206,7 +213,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
       setEditError(
         error instanceof Error
           ? error.message
-          : 'No se pudieron actualizar los colores.'
+          : "No se pudieron actualizar los colores."
       );
     } finally {
       setIsSavingColors(false);
@@ -246,7 +253,9 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
       else setCurrentProduct((prev) => ({ ...prev, ...(payload as any) }));
       setIsEditingInfo(false);
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'No se pudo guardar el producto.');
+      alert(
+        err instanceof Error ? err.message : "No se pudo guardar el producto."
+      );
     }
   };
 
@@ -255,7 +264,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
     try {
       setIsSavingAll(true);
       const colorsSanitized = editableColors
-        .filter((c) => (c.name ?? '').trim() !== '')
+        .filter((c) => (c.name ?? "").trim() !== "")
         .map((c) => ({
           name: String(c.name).trim(),
           cantidad: normalizeColorField(c.cantidad),
@@ -291,7 +300,8 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
       setIsEditingInfo(false);
       setEditError(null);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'No se pudo guardar los cambios.';
+      const message =
+        err instanceof Error ? err.message : "No se pudo guardar los cambios.";
       alert(message);
     } finally {
       setIsSavingAll(false);
@@ -312,7 +322,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
           {!isAdmin || !isEditingInfo ? (
             <ProductInfo product={currentProduct} />
           ) : (
-            <EditingProductData 
+            <EditingProductData
               editableInfo={editableInfo}
               handleInfoFieldChange={handleInfoFieldChange}
               setIsEditingInfo={setIsEditingInfo}
@@ -333,7 +343,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
             <strong>Total: {price}</strong>
           </p>
 
-          <EditingProduct 
+          <EditingProduct
             isAdmin={isAdmin}
             productId={productId}
             currentProduct={currentProduct}

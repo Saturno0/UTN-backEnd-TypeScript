@@ -218,6 +218,90 @@ button:hover {
     font-weight: 600;
 }
 
+/* Editor de información del producto (admin) */
+.product-info-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.product-info-editor input[type="text"],
+.product-info-editor input[type="number"],
+.product-info-editor textarea,
+.product-info-editor select {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    background-color: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-info-editor textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.product-info-editor input:focus,
+.product-info-editor textarea:focus,
+.product-info-editor select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.product-info-editor label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    color: #374151;
+    font-weight: 500;
+}
+
+.product-info-actions {
+    margin-top: 1rem;
+}
+
+.product-info-actions > button {
+    padding: 8px 14px;
+    border-radius: 8px;
+}
+
+.product-info-actions > button:hover {
+    background-color: #0353bc;
+}
+
+.editor-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.editor-actions button:first-child {
+    background-color: #e5e7eb;
+    color: #111827;
+}
+
+.editor-actions button:first-child:hover {
+    background-color: #d1d5db;
+}
+
+.editor-actions button:last-child {
+    background-color: #10b981; /* verde guardar */
+}
+
+.editor-actions button:last-child:hover {
+    background-color: #059669;
+}
+
 /* Estilos responsive para móviles y tablets */
 @media (max-width: 768px) {
 

@@ -7,6 +7,8 @@ import ProductColors from './ProductColors';
 import ProductInfo from './ProductInfo';
 import type { RootState } from '../hooks/store';
 import useProducts from '../hooks/useProducts';
+import EditingProduct from './EditingProductColors';
+import EditingProductData from './EditingProductData';
 
 interface ProductDetailProp {
   product: Product;
@@ -43,7 +45,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
     if (typeof p.id === 'number') return p.id.toString();
     if (typeof p.id === 'string') return p.id;
     return '';
-  }, [currentProduct]);
+  }, [currentProduct._id, (currentProduct as any).id]);
 
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [price, setPrice] = useState<number>(0);
@@ -53,6 +55,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
   );
   const [isSavingColors, setIsSavingColors] = useState(false);
   const [editError, setEditError] = useState<string | null>(null);
+  const [isSavingAll, setIsSavingAll] = useState(false);
 
   // Admin: edición de info general
   const [isEditingInfo, setIsEditingInfo] = useState(false);
@@ -73,7 +76,9 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
   useEffect(() => {
     if (Array.isArray(currentProduct.colores)) {
       setQuantities(buildQuantities(currentProduct.colores));
-      setEditableColors(currentProduct.colores);
+      if (!isEditingColors) {
+        setEditableColors(currentProduct.colores);
+      }
     }
     setEditableInfo({
       name: currentProduct.name || '',
@@ -84,7 +89,7 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
       stock: Boolean(currentProduct.stock),
       estado: currentProduct.estado || 'Activo',
     });
-  }, [currentProduct]);
+  }, [currentProduct, isEditingColors]);
 
   const handleQuantityChange = (colorName: string, value: string) => {
     setQuantities((prev) => ({
@@ -132,14 +137,14 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
   const handleColorFieldChange = (
     index: number,
     field: keyof Pick<ProductColor, 'name' | 'cantidad' | 'stock'>,
-    value: string
+    value: string | number
   ) => {
     setEditableColors((prev) =>
       prev.map((color, colorIndex) => {
         if (colorIndex !== index) return color;
 
         if (field === 'name') {
-          return { ...color, name: value };
+          return { ...color, name: String(value) };
         }
 
         return {
@@ -213,12 +218,6 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
     value: string | number | boolean
   ) => {
     setEditableInfo((prev) => ({ ...prev, [field]: value }));
-    if( field === 'precio_original' || field === 'descuento') {
-      const precioOriginal = editableInfo.precio_original;
-      const descuento = editableInfo.descuento;
-      const precio_actual = precioOriginal - (precioOriginal * (descuento / 100));
-      setEditableInfo((prev) => ({ ...prev, precio_actual: Number(precio_actual.toFixed(3)) }));
-    }
   };
 
   const handleSaveInfo = async () => {
@@ -251,6 +250,54 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
     }
   };
 
+  const handleSaveAll = async () => {
+    if (!productId) return;
+    try {
+      setIsSavingAll(true);
+      const colorsSanitized = editableColors
+        .filter((c) => (c.name ?? '').trim() !== '')
+        .map((c) => ({
+          name: String(c.name).trim(),
+          cantidad: normalizeColorField(c.cantidad),
+          stock: normalizeColorField(c.stock),
+        }));
+
+      const base = Number(editableInfo.precio_original) || 0;
+      const off = Number(editableInfo.descuento) || 0;
+      const final = Math.max(0, Number((base - base * (off / 100)).toFixed(2)));
+
+      const payload: Partial<Product> = {
+        name: editableInfo.name,
+        description: editableInfo.description,
+        precio_original: base,
+        descuento: off,
+        precio_actual: final,
+        estado: editableInfo.estado,
+        colores: colorsSanitized as any,
+      };
+
+      const updater = onUpdateProduct
+        ? onUpdateProduct
+        : async (id: string, updates: Partial<Product>) => {
+            await updateProduct(id, updates);
+            return { ...currentProduct, ...(updates as any) } as Product;
+          };
+
+      const updated = await updater(productId, payload);
+      if (updated) setCurrentProduct(updated as Product);
+      else setCurrentProduct((prev) => ({ ...prev, ...(payload as any) }));
+
+      setIsEditingColors(false);
+      setIsEditingInfo(false);
+      setEditError(null);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'No se pudo guardar los cambios.';
+      alert(message);
+    } finally {
+      setIsSavingAll(false);
+    }
+  };
+
   if (!currentProduct || !Array.isArray(currentProduct.colores)) {
     return <div>Cargando producto...</div>;
   }
@@ -265,69 +312,12 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
           {!isAdmin || !isEditingInfo ? (
             <ProductInfo product={currentProduct} />
           ) : (
-            <div className="product-info-editor">
-              <input
-                type="text"
-                value={editableInfo.name}
-                onChange={(e) => handleInfoFieldChange('name', e.target.value)}
-                placeholder="Nombre"
-              />
-              <textarea
-                value={editableInfo.description}
-                onChange={(e) => handleInfoFieldChange('description', e.target.value)}
-                placeholder="Descripción"
-              />
-              <label>
-                Precio original
-                <input
-                  type="number"
-                  min={0}
-                  value={editableInfo.precio_original}
-                  onChange={(e) => handleInfoFieldChange('precio_original', e.target.value)}
-                />
-              </label>
-              <label>
-                Descuento (%)
-                <input
-                  type="number"
-                  min={0}
-                  max={100}
-                  value={editableInfo.descuento}
-                  onChange={(e) => handleInfoFieldChange('descuento', e.target.value)}
-                />
-              </label>
-              <label>
-                Precio actual
-                <input
-                  type="number"
-                  min={0}
-                  value={editableInfo.precio_actual}
-                  readOnly
-                />
-              </label>
-              <label>
-                En stock
-                <input
-                  type="checkbox"
-                  checked={editableInfo.stock}
-                  onChange={(e) => handleInfoFieldChange('stock', e.target.checked)}
-                />
-              </label>
-              <label>
-                Estado
-                <select
-                  value={editableInfo.estado}
-                  onChange={(e) => handleInfoFieldChange('estado', e.target.value)}
-                >
-                  <option value="Activo">Activo</option>
-                  <option value="Inactivo">Inactivo</option>
-                </select>
-              </label>
-              <div className="editor-actions">
-                <button type="button" onClick={() => setIsEditingInfo(false)}>Cancelar</button>
-                <button type="button" onClick={handleSaveInfo}>Guardar</button>
-              </div>
-            </div>
+            <EditingProductData 
+              editableInfo={editableInfo}
+              handleInfoFieldChange={handleInfoFieldChange}
+              setIsEditingInfo={setIsEditingInfo}
+              handleSaveInfo={handleSaveInfo}
+            />
           )}
 
           <ProductColors
@@ -343,81 +333,26 @@ const ProductDetail: React.FC<ProductDetailProp> = ({ product, onUpdateProduct }
             <strong>Total: {price}</strong>
           </p>
 
-          {isAdmin && productId && (
-            <section className="product-colors-editor">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsEditingColors((prev) => !prev);
-                  setEditError(null);
-                  if (!isEditingColors && Array.isArray(currentProduct.colores)) {
-                    setEditableColors(currentProduct.colores);
-                  }
-                }}
-              >
-                {isEditingColors ? 'Cancelar edición' : 'Editar colores'}
-              </button>
-
-              {isEditingColors && (
-                <div className="color-editor">
-                  {editableColors.map((color, index) => (
-                    <div className="color-editor-row" key={`${color.name}-${index}`}>
-                      <label>
-                        Nombre del color
-                        <input
-                          type="text"
-                          value={color.name}
-                          onChange={(event) =>
-                            handleColorFieldChange(index, 'name', event.target.value)
-                          }
-                          placeholder="Nombre del color"
-                        />
-                      </label>
-                      <label>
-                        Stock disponible
-                        <input
-                          type="number"
-                          min={0}
-                          value={color.stock}
-                          onChange={(event) =>
-                            handleColorFieldChange(index, 'stock', event.target.value)
-                          }
-                          placeholder="Stock"
-                        />
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveColorRow(index)}
-                      >
-                        Eliminar
-                      </button>
-                    </div>
-                  ))}
-
-                  <button type="button" onClick={handleAddColorRow}>
-                    Agregar color
-                  </button>
-
-                  {editError && <p className="error-message">{editError}</p>}
-
-                  <button
-                    type="button"
-                    onClick={handleSaveColors}
-                    disabled={isSavingColors}
-                  >
-                    {isSavingColors ? 'Guardando...' : 'Guardar cambios'}
-                  </button>
-                </div>
-              )}
-            </section>
-          )}
-          {isAdmin && (
-            <section className="product-info-actions">
-              <button type="button" onClick={() => setIsEditingInfo((prev) => !prev)}>
-                {isEditingInfo ? 'Cancelar edición' : 'Editar producto'}
-              </button>
-            </section>
-          )}
+          <EditingProduct 
+            isAdmin={isAdmin}
+            productId={productId}
+            currentProduct={currentProduct}
+            isEditingColors={isEditingColors}
+            setIsEditingColors={setIsEditingColors}
+            setEditError={setEditError}
+            editableColors={editableColors}
+            setEditableColors={setEditableColors}
+            handleColorFieldChange={handleColorFieldChange}
+            handleRemoveColorRow={handleRemoveColorRow}
+            handleAddColorRow={handleAddColorRow}
+            editError={editError}
+            handleSaveColors={handleSaveColors}
+            isSavingColors={isSavingColors}
+            isEditingInfo={isEditingInfo}
+            setIsEditingInfo={setIsEditingInfo}
+            handleSaveAll={handleSaveAll}
+            isSavingAll={isSavingAll}
+          />
         </div>
       </div>
     </div>

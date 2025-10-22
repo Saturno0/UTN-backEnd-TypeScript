@@ -27,7 +27,7 @@ const productSchema = new Schema(
     tamaños: [
       {
         type: String,
-        enum: ['XS', 'S', 'M', 'L', 'XL'],
+        enum: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
         trim: true,
       }
     ],

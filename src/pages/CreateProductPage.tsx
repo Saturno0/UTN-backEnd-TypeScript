@@ -156,9 +156,9 @@ const CreateProductPage: React.FC = () => {
       return;
     }
 
-    const sanitizedColors = (product.colores ?? []).filter(
-      (color) => color.name && color.name.trim() !== ""
-    ) as ProductColor[];
+    const sanitizedColors = (product.colores ?? [])
+      .filter((color) => color.name && color.name.trim() !== "")
+      .map((c) => ({ name: c.name.trim(), cantidad: Number(c.cantidad) || 0 })) as unknown as ProductColor[];
     const totalStock = calculateTotalStock(sanitizedColors);
     const payload: Product = {
       ...product,

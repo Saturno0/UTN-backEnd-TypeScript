@@ -106,8 +106,29 @@ export const createProductService = async (productData) => {
       throw error;
     }
   }
-
+  
   productData.imageUrl = await generateSignedUrl(productData.imageUrl);
+
+  // Normalize colores: ensure numeric fields and initialize per-color stock from cantidad when creating
+  if (Array.isArray(productData?.colores)) {
+    productData.colores = productData.colores.map((c) => {
+      const name = String(c?.name ?? '').trim();
+      const cantidad = Number(c?.cantidad) || 0;
+      let stockRaw = c?.stock;
+      let stockNum = typeof stockRaw === 'string' ? Number(stockRaw) : stockRaw;
+      if (!Number.isFinite(stockNum) || stockNum === undefined || stockNum === null || stockNum < 0) {
+        stockNum = cantidad;
+      }
+      const stock = stockNum;
+      return { name, cantidad, stock };
+    });
+  }
+
+  // Compute overall product stock based on sum of per-color stock
+  if (Array.isArray(productData?.colores)) {
+    const total = productData.colores.reduce((sum, c) => sum + (Number(c.stock) || 0), 0);
+    productData.stock = total > 0 ? true : false;
+  }
 
   const newProduct = new Product(productData);
 

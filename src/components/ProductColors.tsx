@@ -11,7 +11,6 @@ const ProductColors: React.FC<ProductColorsProps> = ({ colors, quantities, onQua
     if (colors.length === 0) {
         return <p>No hay colores disponibles para este producto.</p>;
     }
-    console.log("colores: ", colors);
 
     return(
         <table className="color-table">

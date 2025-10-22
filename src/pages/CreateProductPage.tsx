@@ -16,7 +16,6 @@ import type { RootState } from "../hooks/store.ts";
 
 const CreateProductPage: React.FC = () => {
   const user = useSelector((state: RootState) => state.user); 
-
   const isAdmin = user.rol === "admin";
 
   const navigate = useNavigate();

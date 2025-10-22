@@ -8,6 +8,7 @@ interface RightMenuProps {
 };
 
 const RightMenu: React.FC<RightMenuProps> = ({ user, totalItems, handleNavigation }) => {
+    const isAdmin = user.rol === "admin";
     return (
         <>
             <div className="right-menu">
@@ -15,6 +16,13 @@ const RightMenu: React.FC<RightMenuProps> = ({ user, totalItems, handleNavigatio
                     <li onClick={() => handleNavigation()}>
                         <h3>{user.activo? `${user.nombre}` : "Acceder"}</h3>
                     </li>
+                    {isAdmin && (
+                        <li>
+                            <Link to="/create-product">
+                                <h3>Crear producto</h3>
+                            </Link>
+                        </li>
+                    )}
                     <li>
                         <Link to={{
                             pathname: "/cart",

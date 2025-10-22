@@ -24,7 +24,7 @@ const productSchema = new Schema(
     precio_original: { type: Number, required: true, min: 0 },
 
     // Relación con Size: talles disponibles para el producto
-    tamaños: [
+    talles: [
       {
         type: String,
         enum: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],

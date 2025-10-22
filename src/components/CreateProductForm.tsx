@@ -70,10 +70,10 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({
           rows={4}
         />
 
-        <label>Tamaños disponibles</label>
+        <label>Talles disponibles</label>
         <div className="sizes-group">
           {sizesOptions.map((size) => {
-            const checked = product.tamaños.includes(size);
+            const checked = product.talles.includes(size);
             return (
               <label key={size} className="size-option">
                 <input
@@ -82,8 +82,8 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({
                   onChange={(e) =>
                     onSizesChange(
                       e.target.checked
-                        ? [...product.tamaños, size]
-                        : product.tamaños.filter((s) => s !== size)
+                        ? [...product.talles, size]
+                        : product.talles.filter((s) => s !== size)
                     )
                   }
                 />
@@ -143,16 +143,6 @@ const CreateProductForm: React.FC<CreateProductFormProps> = ({
             </div>
           ))}
         </div>
-
-        <label htmlFor="prod_pactual">Precio actual</label>
-        <input
-          id="prod_pactual"
-          name="precio_actual"
-          type="number"
-          step="0.01"
-          value={product.precio_actual}
-          onChange={onChangeProduct}
-        />
 
         <label htmlFor="prod_porigen">Precio original</label>
         <input

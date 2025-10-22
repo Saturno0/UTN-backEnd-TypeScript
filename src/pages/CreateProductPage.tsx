@@ -11,8 +11,14 @@ import useCategories from "../hooks/useCategories";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CreateProduct from "../components/CreateProduct.tsx";
+import { useSelector } from "react-redux";
+import type { RootState } from "../hooks/store.ts";
 
 const CreateProductPage: React.FC = () => {
+  const user = useSelector((state: RootState) => state.user); 
+
+  const isAdmin = user.rol === "admin";
+
   const navigate = useNavigate();
   const [category, setCategory] = useState<Category>({
     nombre: "",
@@ -37,7 +43,7 @@ const CreateProductPage: React.FC = () => {
     descuento: 0,
     precio_actual: 0,
     precio_original: 0,
-    tamaños: [],
+    talles: [],
     especificaciones: {
       material: "",
       peso: "",
@@ -98,12 +104,12 @@ const CreateProductPage: React.FC = () => {
     const parsedValue = numericFields.includes(name)
       ? Number(value) || 0
       : value;
-    if (name === "tamaños") return; // este campo lo manejamos aparte como lista
+    if (name === "talles") return; // este campo lo manejamos aparte como lista
     setProduct((prev) => ({ ...prev, [name]: parsedValue } as Product));
   };
 
   const handleChangeSizes = (sizes: string[]) => {
-    setProduct((prev) => ({ ...prev, tamaños: sizes }));
+    setProduct((prev) => ({ ...prev, talles: sizes }));
   };
 
   const handleAddColor = () => {
@@ -138,6 +144,10 @@ const CreateProductPage: React.FC = () => {
     });
   };
 
+  const calculateFinalPrice = ():number => {
+    return (product.precio_original - (product.precio_original * (product.descuento / 100)));
+  };
+
   const handleChangeImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
     setImageFile(file);
@@ -160,14 +170,17 @@ const CreateProductPage: React.FC = () => {
       .filter((color) => color.name && color.name.trim() !== "")
       .map((c) => ({ name: c.name.trim(), cantidad: Number(c.cantidad) || 0 })) as unknown as ProductColor[];
     const totalStock = calculateTotalStock(sanitizedColors);
+    const precioFinal: number = calculateFinalPrice();
     const payload: Product = {
       ...product,
       colores: sanitizedColors,
       stock: totalStock > 0? true : false,
       estado: "Activo",
       ingreso: 'nuevo',
+      precio_actual: precioFinal,
     };
-    console.log("tamaños: ", product.tamaños);
+
+    
     const response = await createProduct(payload, imageFile);
     console.log(response);
     if (!response) {
@@ -192,7 +205,7 @@ const CreateProductPage: React.FC = () => {
       descuento: 0,
       precio_actual: 0,
       precio_original: 0,
-      tamaños: [],
+      talles: [],
       especificaciones: { material: "", peso: "", fabricado_en: "" },
       colores: [{ name: "", cantidad: 0, stock: 0 }],
       ingreso: "",
@@ -221,28 +234,34 @@ const CreateProductPage: React.FC = () => {
     // Sincronizamos el nombre de categoría en el producto mediante el useEffect
   };
 
-    return (
-      <>
-        <Navbar />
-        <CreateProduct
-          product={product}
-          category={category}
-          especificaciones={especificaciones}
-          onChangeProduct={handleChangeProduct}
-          onChangeCategory={handleChangeCategory}
-          onChangeSpecs={handleChangeEspecificaciones}
-          onSizesChange={handleChangeSizes}
-          onChangeImageFile={handleChangeImageFile}
-          onAddColor={handleAddColor}
-          onChangeColor={handleChangeColor}
-          onCreateProduct={handleCreateProduct}
-          onCreateCategory={handleCreateCategory}
-          loadingCreateProduct={loading.create}
-          loadingCreateCategory={categoryLoading.create}
-        />
-        <Footer />
-      </>
-    );
+  return (
+    <>
+      {isAdmin ? (
+        <>
+          <Navbar />
+          <CreateProduct
+            product={product}
+            category={category}
+            especificaciones={especificaciones}
+            onChangeProduct={handleChangeProduct}
+            onChangeCategory={handleChangeCategory}
+            onChangeSpecs={handleChangeEspecificaciones}
+            onSizesChange={handleChangeSizes}
+            onChangeImageFile={handleChangeImageFile}
+            onAddColor={handleAddColor}
+            onChangeColor={handleChangeColor}
+            onCreateProduct={handleCreateProduct}
+            onCreateCategory={handleCreateCategory}
+            loadingCreateProduct={loading.create}
+            loadingCreateCategory={categoryLoading.create}
+          />
+          <Footer />
+        </>
+      ) : (
+        navigate("/")
+      )}
+    </>
+  );
 };
 
 export default CreateProductPage;

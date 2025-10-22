@@ -68,7 +68,7 @@ export const createProduct = async (req, res) => {
       ...raw,
       colores: parseMaybeJson(raw.colores) ?? raw.colores,
       especificaciones: parseMaybeJson(raw.especificaciones) ?? raw.especificaciones,
-      tamaños: parseMaybeJson(raw.tamaños) ?? raw.tamaños,
+      talles: parseMaybeJson(raw.talles) ?? raw.talles,
       precio_actual: coerceNumber(raw.precio_actual),
       precio_original: coerceNumber(raw.precio_original),
       descuento: coerceNumber(raw.descuento),

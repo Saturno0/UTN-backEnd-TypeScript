@@ -49,8 +49,6 @@ export const getAllProductsService = async () => {
     .populate(productPopulateCategory)
     .lean();
 
-  console.log(products);
-
   if (products.length === 0) {
     const error = new Error("No products found");
     error.statusCode = 204;
@@ -84,6 +82,7 @@ export const createProductService = async (productData) => {
   }
 
   const category = await findCategoryByName(productData.category);
+  console.log(productData.talles)
 
   if (category) {
     const idCategory = category._id;
@@ -146,7 +145,7 @@ export const getAllSizesByProductService = async (idProduct) => {
     throw error;
   }
 
-  const sizes = productExist.tamaños;
+  const sizes = productExist.talles;
 
   return { sizes };
 };

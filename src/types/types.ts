@@ -36,7 +36,7 @@ export interface Product {
   descuento: number;
   precio_actual: number;
   precio_original: number;
-  tamaños: string[];
+  talles: string[];
   especificaciones: ProductSpecs;
   colores: ProductColor[];
   ingreso: string;

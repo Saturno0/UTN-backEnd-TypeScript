@@ -5,7 +5,7 @@ interface ProductInfoProps {
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
-    const sizes = Array.isArray(product.tamaños) ? product.tamaños : [];
+    const sizes = Array.isArray(product.talles) ? product.talles : [];
     const specs = product.especificaciones ?? { material: '', peso: '', fabricado_en: '' };
 
     return (

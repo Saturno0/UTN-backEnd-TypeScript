@@ -167,7 +167,7 @@ const CreateProductPage: React.FC = () => {
       estado: "Activo",
       ingreso: 'nuevo',
     };
-
+    console.log("tamaños: ", product.tamaños);
     const response = await createProduct(payload, imageFile);
     console.log(response);
     if (!response) {

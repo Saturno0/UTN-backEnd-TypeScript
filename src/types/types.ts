@@ -1,8 +1,6 @@
 import type { Dispatch } from "@reduxjs/toolkit";
 
 export interface ProductColor {
-  _id?: string;
-  id?: string;
   name: string;
   cantidad: number;
   stock: number;

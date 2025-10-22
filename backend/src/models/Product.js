@@ -41,13 +41,15 @@ const productSchema = new Schema(
     category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
 
     // Colores disponibles (estructura plana para facilitar su edición desde el frontend)
-    colores: [
-      {
+    colores: [{
+      type: Array,
+      items: {
         name: { type: String, required: true, trim: true },
         cantidad: { type: Number, required: true, default: 0, min: 0 },
         stock: { type: Number, required: true, default: 0, min: 0 },
       },
-    ],
+      required: true
+    }],
 
     ingreso: { type: String, enum: ['nuevo', 'viejo'], default: 'nuevo' },
 

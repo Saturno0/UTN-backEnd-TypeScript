@@ -1,69 +1,81 @@
-## E‑Commerce Ropa (React + TypeScript + Vite + Express)
+## Frontend — E‑commerce de ropa (React + TypeScript + Vite)
 
-Single‑page e‑commerce demo with a React frontend (Vite + TypeScript + Redux Toolkit + React Router) and a simple Express server backed by MySQL.
+Aplicación SPA de comercio electrónico con frontend en React (Vite + TypeScript + Redux Toolkit + React Router). Este frontend consume una API REST ubicada en `backend/` (Express + MongoDB).
 
-### Tech stack
+### Tecnologías
 - Frontend: React 19, Vite 7, TypeScript, Redux Toolkit, React Router
-- Backend: Express 5, `mysql2/promise`, CORS, Dotenv
-- Styling: CSS modules and global styles under `src/styles/`
+- Estilos: CSS globales bajo `src/styles/`
+- Backend (opcional): Express 5, Mongoose (MongoDB), JWT, Multer, AWS S3 (ver `../backend/`)
 
-### Prerequisites
-- Node.js 18.17+ (Node 20 LTS recommended)
+### Requisitos previos
+- Node.js 18.17+ (recomendado Node 20 LTS)
 - npm 9+
-- Optional for backend: MySQL 8+
+- Opcional para backend: MongoDB (local o Atlas)
 
-If you see `TypeError: crypto.hash is not a function`, upgrade Node (Vite requires modern Node).
+Si ves `TypeError: crypto.hash is not a function`, actualiza tu versión de Node (Vite requiere una versión moderna).
 
-### Getting started (frontend only)
+### Puesta en marcha (solo frontend)
 ```bash
 npm install
 npm run dev
-# opens http://localhost:5173
+# abre http://localhost:5173
 ```
 
-### Run the backend (optional)
-1) Configure environment variables (create `.env` from `env.example`):
+### Conectar con el backend (opcional)
+1) Crea el archivo de entorno del frontend a partir de `env.example`:
+```
+VITE_API_BASE_URL=http://localhost:4000/api
+```
+
+2) Backend (en `backend/`):
+```bash
+cd ../backend
+npm install
+npm run dev
+# API en http://localhost:4000
+```
+
+3) Variables de entorno del backend (crear `.env` usando `backend/env.model` como referencia):
 ```
 PORT=4000
-CORS_ORIGIN=http://localhost:5173
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=root
-DB_NAME=shopdb
-```
-2) Create schema (optional example under `database/schema.sql`).
-
-3) Start the API:
-```bash
-npm run server:dev
-# server runs on http://localhost:4000
+MONGO_URI=mongodb://localhost:27017/tu-db
+JWT_SECRET=tu_secreto
+# Opcional S3
+AWS_REGION=...
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+S3_BUCKET_NAME=...
 ```
 
-Frontend endpoints expect your own data. Adjust any hardcoded URLs (e.g., in `src/components/Checkout.tsx`).
+Asegúrate de que el valor de `VITE_API_BASE_URL` coincida con la URL donde corre tu API.
 
 ### Scripts
-- `npm run dev`: start Vite dev server
-- `npm run build`: type‑check and build
-- `npm run preview`: preview production build
-- `npm run lint`: run ESLint
-- `npm run server:dev`: start Express with tsx
+- `npm run dev`: inicia el servidor de desarrollo de Vite
+- `npm run build`: compila TypeScript y genera el build de producción
+- `npm run preview`: previsualiza el build de producción
+- `npm run lint`: ejecuta ESLint
 
-### Project structure (high‑level)
+### Estructura (frontend)
 ```
 src/
-  components/      # UI components
-  pages/           # Route pages
-  hooks/           # Redux store & slices
-  styles/          # Global CSS
-  server.ts        # Express server
+  components/      # Componentes de UI
+  pages/           # Páginas del router
+  hooks/           # Store de Redux y hooks (productos, categorías, usuarios)
+  styles/          # Estilos globales
+  config/          # Configuración de endpoints (api.ts)
+  types/           # Tipos compartidos
 public/
-database/
 ```
 
-### Troubleshooting
-- Blue links / white text: the app imports `src/styles/Index.css`, and the default Vite `index.css` has been neutralized.
-- Missing React/JSX types: install `@types/react @types/react-dom` and set `"jsx": "react-jsx"` in `tsconfig.app.json`.
-- Node types/server types: install `@types/node @types/express @types/cors`.
+Puntos clave:
+- `src/config/api.ts` centraliza rutas REST y las combina con `VITE_API_BASE_URL`.
+- `src/hooks/store.ts` registra los slices globales (carrito y usuario).
+- `src/pages` organiza las vistas principales (inicio, producto, carrito, checkout, login/registro, perfil, etc.).
 
-### License
-ISC (for educational/demo use).
+### Problemas comunes
+- Tipos de React/JSX: asegúrate de tener `@types/react` y `@types/react-dom` y que tu TS esté configurado para React.
+- Errores por Node antiguo: actualiza a una versión LTS si Vite arroja errores de compatibilidad.
+
+### Licencia
+ISC (uso educativo/demostración).
+

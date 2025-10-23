@@ -1,8 +1,6 @@
 import type { Dispatch } from "@reduxjs/toolkit";
 
 export interface ProductColor {
-  _id?: string;
-  id?: string;
   name: string;
   cantidad: number;
   stock: number;
@@ -28,7 +26,8 @@ export interface Product {
   _id?: string;
   id?: string | number;
   name: string;
-  image: string;
+  image: File,
+  imageUrl: string;
   category: string;
   description: string;
   calificacion: number;
@@ -37,10 +36,11 @@ export interface Product {
   descuento: number;
   precio_actual: number;
   precio_original: number;
-  tamaños: string[];
+  talles: string[];
   especificaciones: ProductSpecs;
   colores: ProductColor[];
   ingreso: string;
+  estado: string;
 }
 
 export interface CartState {
@@ -66,6 +66,7 @@ export interface UserState {
   nombre: string;
   email: string;
   password: string;
+  rol: string;
   activo: boolean;
 }
 
@@ -81,7 +82,7 @@ export interface ApiUser {
   _id?: string;
   nombre: string;
   email: string;
-  rol?: "user" | "admin";
+  rol: string;
   activo?: boolean;
   createdAt?: string;
   updatedAt?: string;

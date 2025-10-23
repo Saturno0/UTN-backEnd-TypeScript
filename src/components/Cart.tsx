@@ -10,6 +10,7 @@ const Cart: React.FC<CartItemsProps> = ({ items, dispatch }) => {
     nombre: "",
     email: "",
     password: "",
+    rol: "user",
     activo: false,
   });
 
@@ -30,6 +31,7 @@ const Cart: React.FC<CartItemsProps> = ({ items, dispatch }) => {
           nombre: "",
           email: "",
           password: "",
+          rol: "user",
           activo: false,
         });
       }
@@ -38,6 +40,7 @@ const Cart: React.FC<CartItemsProps> = ({ items, dispatch }) => {
         nombre: "",
         email: "",
         password: "",
+        rol: "user",
         activo: false,
       });
     }

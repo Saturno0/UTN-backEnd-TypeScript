@@ -10,7 +10,7 @@ function useDeleteProduct() {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch(`${buildApiUrl(API_CONFIG.PRODUCTS.DELETE)}/${id}`, {
+            const response = await fetch(buildApiUrl(API_CONFIG.PRODUCTS.DELETE).replace(":id", `${id}`), {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" }
             });

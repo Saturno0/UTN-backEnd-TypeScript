@@ -3,11 +3,11 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import session from 'express-session';
 
-import { connectDB } from './db.js';
-import { CORS_ORIGIN, JWT_SECRET, PORT } from './config.js';
-import { categoryRouter } from './src/routes/categoryRoute.js';
-import { productRouter } from './src/routes/productRoute.js';
-import { userRoute } from './src/routes/userRoute.js';
+import { connectDB } from '../db.js';
+import { JWT_SECRET, PORT } from '../config.js';
+import { categoryRouter } from '../src/routes/categoryRoute.js';
+import { productRouter } from '../src/routes/productRoute.js';
+import { userRoute } from '../src/routes/userRoute.js';
 
 const app = express();
 
@@ -16,12 +16,9 @@ connectDB();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const allowedOrigins = (CORS_ORIGIN || 'http://localhost:5173')
-  .split(',')
-  .map((origin) => origin.trim());
+const allowedOrigins = ("*");
 
-app.use(
-  cors({
+app.use(cors({
     origin: allowedOrigins,
     credentials: true,
   })

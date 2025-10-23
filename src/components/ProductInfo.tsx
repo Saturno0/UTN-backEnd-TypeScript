@@ -5,16 +5,12 @@ interface ProductInfoProps {
 }
 
 const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
-    const sizes = Array.isArray(product.tamaños) ? product.tamaños : [];
+    const sizes = Array.isArray(product.talles) ? product.talles : [];
     const specs = product.especificaciones ?? { material: '', peso: '', fabricado_en: '' };
 
     return (
         <>
             <h2>{product.name}</h2>
-            <div className="product-rating">
-                ⭐⭐⭐⭐☆ ({product.calificacion}) · {product.opiniones} opiniones
-            </div>
-            <p>{product.description}</p>
 
             {product.stock ? <p className="stock">En stock</p> : <p className="stock">Sin stock</p>}
             {product.descuento > 0 && (
@@ -27,6 +23,8 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
                     <del style={{ color: "#888", fontSize: "1rem" }}>${product.precio_original}</del>
                 )}
             </p>
+
+            <h4>{product.description}</h4>
 
             <label htmlFor="size">Tamaño:</label>
             <select id="size" name="size">

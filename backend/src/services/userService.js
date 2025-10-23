@@ -63,7 +63,17 @@ export const logIn = async(email, password) => {
 
     const token = jwt.sign(payload, JWT_SECRET, {expiresIn: "1h"});
 
-    return {message: "logged in succesfuly", token};
+    const userObject = typeof userFound.toObject === 'function' ? userFound.toObject() : userFound;
+
+    const safeUser = {
+        id: userObject._id?.toString?.() ?? userObject._id,
+        nombre: userObject.nombre ?? "",
+        email: userObject.email,
+        rol: userObject.rol ?? "user",
+        activo: Boolean(userObject.activo ?? true)
+    };
+
+    return {message: "logged in succesfuly", token, user: safeUser};
 }
 
 export const updateUserService = async(idUser, updateData) => {
@@ -94,14 +104,17 @@ export const updateUserService = async(idUser, updateData) => {
 }
 
 export const getRolService = async(idUser) => {
-    const userExist = await User.findOne({ _id: idUser });
+    const userExist = await User.findById(idUser).select('rol');
 
     if(!userExist){
-        const error = new Error("The product you're trying to update does not exist")
+        const error = new Error("The user you're trying to query does not exist")
         error.statusCode = 400;
         throw error;
     }
 
-    const userRol = userExist.rol;
-    return { userRol };
+    const { rol } = userExist;
+
+    return {
+        rol
+    };
 }

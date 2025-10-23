@@ -1,5 +1,7 @@
 import { Product } from "../models/Product.js";
 import { findProductById } from "../utils/helpers.js";
+import { findCategoryByName } from "./categoryService.js";
+import { deleteImageFromS3, generateSignedUrl } from "./imageService.js";
 
 const productPopulateCategory = { path: "category", select: "nombre" };
 
@@ -33,7 +35,7 @@ export const getAllColorsByProductService =  async(idProduct) => {
 
   if(!producExist) {
     const error = new Error("No existing product");
-    error.statusCode(204);
+    error.statusCode = 204;
     throw error;
   }
 
@@ -46,8 +48,6 @@ export const getAllProductsService = async () => {
   const products = await Product.find()
     .populate(productPopulateCategory)
     .lean();
-
-  console.log(products);
 
   if (products.length === 0) {
     const error = new Error("No products found");
@@ -81,11 +81,55 @@ export const createProductService = async (productData) => {
     throw error;
   }
 
-  const colorDuplicate = productExist.colores.filter(
-    (color, index) => productExist.colores.indexOf(color) !== index
-  );
+  const category = await findCategoryByName(productData.category);
+  console.log(productData.talles)
 
-  const newProduct = new Product(...productData);
+  if (category) {
+    const idCategory = category._id;
+    productData.category = idCategory;
+  }
+
+  // Validate duplicate colors in incoming data (by name)
+  if (Array.isArray(productData?.colores)) {
+    const seen = new Set();
+    const duplicates = [];
+    for (const c of productData.colores) {
+      const key = typeof c === "string" ? c.trim().toLowerCase() : String(c?.name || "").trim().toLowerCase();
+      if (!key) continue;
+      if (seen.has(key)) duplicates.push(key);
+      seen.add(key);
+    }
+    if (duplicates.length > 0) {
+      const error = new Error("Duplicate colors in payload: " + [...new Set(duplicates)].join(", "));
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+  
+  productData.imageUrl = await generateSignedUrl(productData.imageUrl);
+
+  // Normalize colores: ensure numeric fields and initialize per-color stock from cantidad when creating
+  if (Array.isArray(productData?.colores)) {
+    productData.colores = productData.colores.map((c) => {
+      const name = String(c?.name ?? '').trim();
+      const cantidad = Number(c?.cantidad) || 0;
+      let stockRaw = c?.stock;
+      let stockNum = typeof stockRaw === 'string' ? Number(stockRaw) : stockRaw;
+      if (!Number.isFinite(stockNum) || stockNum === undefined || stockNum === null || stockNum < 0) {
+        stockNum = cantidad;
+      }
+      const stock = stockNum;
+      return { name, cantidad, stock };
+    });
+  }
+
+  // Compute overall product stock based on sum of per-color stock
+  if (Array.isArray(productData?.colores)) {
+    const total = productData.colores.reduce((sum, c) => sum + (Number(c.stock) || 0), 0);
+    productData.stock = total > 0 ? true : false;
+  }
+
+  const newProduct = new Product(productData);
 
   await newProduct.save();
 
@@ -101,7 +145,7 @@ export const getAllSizesByProductService = async (idProduct) => {
     throw error;
   }
 
-  const sizes = productExist.tamaños;
+  const sizes = productExist.talles;
 
   return { sizes };
 };
@@ -138,9 +182,11 @@ export const updateProductService = async (productId, updateData) => {
 
   const updatedProduct = await Product.findByIdAndUpdate(
     { _id: productId },
-    { runValidators: true },
     updateData,
-    { new: true }
+    {
+      new: true,
+      runValidators: true,
+    }
   );
 
   return {
@@ -150,8 +196,15 @@ export const updateProductService = async (productId, updateData) => {
 };
 
 export const deleteProductService = async (id) => {
+  console.log(id);
   const product = await findProductById(id);
+  if(!product) {
+    const error = new Error("No product existing");
+    error.statusCode = 404;
+    throw error;
+  }
 
+  await deleteImageFromS3(product.imageUrl);
   await Product.deleteOne({ _id: id });
 
   return { message: "Product deleted successfully" };

@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node ./api/index.js",
+    "dev": "nodemon ./api/index.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/Saturno0/UTN-backEnd-TypeScript#readme",
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.914.0",
+    "@aws-sdk/s3-request-presigner": "^3.913.0",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
@@ -27,7 +29,9 @@
     "express-session": "^1.18.2",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.19.0",
-    "mongoose": "^8.18.1"
+    "mongoose": "^8.18.1",
+    "multer": "^2.0.2",
+    "sharp": "^0.34.4"
   },
   "devDependencies": {
     "dotenv": "^17.2.2",

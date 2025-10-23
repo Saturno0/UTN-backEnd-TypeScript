@@ -7,14 +7,14 @@ import {
 
 export const getCategories = async (req, res) => {
   try {
-    console.log("getCategories controller");
     const categories = await getCategoriesService();
+    console.log(categories);
     res.status(200).json(categories);
   } catch (error) {
     if (error.statusCode === 204) {
       res.status(204).json(error.message);
     } else {
-      res.status(500).json({ message: "Internal server error" });
+      res.status(500).json({ message: error.message });
     }
   }
 };

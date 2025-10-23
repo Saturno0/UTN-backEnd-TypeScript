@@ -1,0 +1,122 @@
+/* Create Product Page */
+.create-main {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row-reverse;
+  gap: 2rem;
+  padding-right: 10rem;
+}
+
+.create-section {
+  margin: 0 auto 2rem auto;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  width: 25rem;
+}
+
+.create-section-spaced {
+  margin: auto;
+  width: 35rem;
+}
+
+.create-form {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 800px;
+}
+
+.create-form-narrow {
+  max-width: 600px;
+}
+
+.create-form label {
+  font-weight: 600;
+}
+
+.create-form input,
+.create-form textarea,
+.create-form select {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #fff;
+}
+
+.create-form input:focus,
+.create-form textarea:focus,
+.create-form select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.create-fieldset {
+  margin-top: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.create-submit {
+  margin-top: 1rem;
+  align-self: start;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sizes-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+
+.size-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+}
+
+.color-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.color-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.color-row input {
+  width: 100%;
+}
+
+.color-add {
+  padding: 0.55rem;
+  border: 1px solid #2563eb;
+  background-color: #2563eb;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.color-add:hover {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+}
+

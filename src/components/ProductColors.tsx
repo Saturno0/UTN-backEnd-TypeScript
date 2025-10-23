@@ -17,13 +17,13 @@ const ProductColors: React.FC<ProductColorsProps> = ({ colors, quantities, onQua
             <thead>
                 <tr>
                     <th>COLOR</th>
-                    <th>CANTIDAD</th>
+                    <th>CANTIDAD A COMPRAR</th>
                     <th>STOCK DISPONIBLE</th>
                 </tr>
             </thead>
             <tbody>
-                {colors.map(({ id, name, stock }) => (
-                    <tr key={id}>
+                {colors.map(({ name, stock }, index) => (
+                    <tr key={index}>
                         <td>{name}</td>
                         <td>
                             <input

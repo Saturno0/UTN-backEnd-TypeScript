@@ -93,8 +93,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }
   };
 
-  // Descripción: cubrir ambos posibles campos
-  const descripcion = (producto as any).description ?? (producto as any).descripcion ?? '';
 
   // Clase del botón toggle según la ACCIÓN (peligrosa si va a “sacar disponibilidad”)
   const toggleBtnClass = disponible ? 'btn-unavailable' : 'btn-available';

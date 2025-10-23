@@ -116,7 +116,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           alt={`imagen de ${producto.name}`}
           loading="lazy"
         />
-        <p>{descripcion}</p>
         <p>Precio: ${producto.precio_actual}</p>
 
         {admin && (

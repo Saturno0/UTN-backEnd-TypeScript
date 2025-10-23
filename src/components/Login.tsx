@@ -50,15 +50,6 @@ const Login: React.FC = () => {
       <form className="login-form" onSubmit={handleSubmit}>
         <h2 className="login-title">Iniciar sesión</h2>
 
-        <label className="login-label">Nombre de usuario</label>
-        <input
-          className="login-input"
-          type="text"
-          value={nombre}
-          onChange={(event) => setnombre(event.target.value)}
-          placeholder="Ingrese su nombre de usuario"
-        />
-
         <label htmlFor="login-email" className="login-label">
           Email
         </label>

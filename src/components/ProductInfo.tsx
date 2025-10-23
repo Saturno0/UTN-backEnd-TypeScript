@@ -11,7 +11,6 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
     return (
         <>
             <h2>{product.name}</h2>
-            <p>{product.description}</p>
 
             {product.stock ? <p className="stock">En stock</p> : <p className="stock">Sin stock</p>}
             {product.descuento > 0 && (
@@ -24,6 +23,8 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
                     <del style={{ color: "#888", fontSize: "1rem" }}>${product.precio_original}</del>
                 )}
             </p>
+
+            <h4>{product.description}</h4>
 
             <label htmlFor="size">Tamaño:</label>
             <select id="size" name="size">

@@ -196,6 +196,7 @@ export const updateProductService = async (productId, updateData) => {
 };
 
 export const deleteProductService = async (id) => {
+  console.log(id);
   const product = await findProductById(id);
   if(!product) {
     const error = new Error("No product existing");

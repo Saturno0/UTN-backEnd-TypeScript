@@ -69,7 +69,7 @@ const Checkout: React.FC = () => {
       };
 
       const response = await fetch(
-        "http://localhost:3001/api/send-confirmation",
+        "https://utn-backend-final.onrender.com/api/send-confirmation",
         {
           method: "POST",
           headers: {

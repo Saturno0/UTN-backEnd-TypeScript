@@ -25,6 +25,7 @@ Este es el backend de la aplicación de e-commerce desarrollado con Node.js, Exp
 - **body-parser** (^2.2.0) - Parsing de datos del cuerpo de las peticiones
 - **multer** (^2.0.2) - Manejo de archivos multipart/form-data
 - **sharp** (^0.34.4) - Procesamiento de imágenes
+- **nodemailer** (^6.10.1) - Envío de emails
 - **@aws-sdk/client-s3** (^3.914.0) - Cliente AWS S3
 - **@aws-sdk/s3-request-presigner** (^3.913.0) - Generación de URLs firmadas para S3
 - **swagger-jsdoc** (^6.2.8) - Documentación automática de API
@@ -91,6 +92,10 @@ AWS_REGION=us-east-1
 AWS_ACCESS_KEY_ID=tu_access_key_id
 AWS_SECRET_ACCESS_KEY=tu_secret_access_key
 AWS_S3_BUCKET_NAME=nombre_de_tu_bucket
+
+# Email Configuration
+EMAIL_USER=tu_email@gmail.com
+EMAIL_PASS=tu_app_password
 ```
 
 ### Instalación
@@ -167,6 +172,18 @@ npm start
 - Manejo seguro de eliminación de archivos
 - Extracción automática de keys de URLs
 
+### 📧 Servicio de Email (`emailService.js`)
+
+**Funciones principales:**
+- `sendOrderConfirmationEmail(orderData)` - Enviar confirmación de orden por email
+
+**Características:**
+- Integración con Nodemailer y Gmail
+- Plantillas HTML para emails profesionales
+- Validación de datos de entrada
+- Generación automática de números de orden
+- Envío de confirmaciones tanto al cliente como al administrador
+
 ## 🛡️ Middlewares
 
 ### `verifyTokemMiddleware.js`
@@ -240,6 +257,9 @@ npm start
 - `GET /getCategory/:id` - Obtener categoría por ID
 - `POST /createCategory` - Crear categoría
 - `POST /createCategories` - Crear múltiples categorías
+
+### Email (`/api`)
+- `POST /send-confirmation` - Enviar confirmación de orden por email
 
 ## 📖 Documentación API
 

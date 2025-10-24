@@ -17,6 +17,10 @@ const options = {
       {
         url: 'http://localhost:4000',
         description: 'Servidor de desarrollo'
+      },
+      {
+        url: 'https://utn-backend-final.onrender.com',
+        description: 'Servidor de producción'
       }
     ],
     components: {
@@ -327,6 +331,79 @@ const options = {
             data: {
               type: 'object',
               description: 'Datos de respuesta'
+            }
+          }
+        },
+        EmailOrder: {
+          type: 'object',
+          required: ['nombre', 'email', 'telefono', 'direccion', 'ciudad', 'codigoPostal', 'items', 'total'],
+          properties: {
+            nombre: {
+              type: 'string',
+              description: 'Nombre del cliente'
+            },
+            email: {
+              type: 'string',
+              format: 'email',
+              description: 'Email del cliente'
+            },
+            telefono: {
+              type: 'string',
+              description: 'Teléfono del cliente'
+            },
+            direccion: {
+              type: 'string',
+              description: 'Dirección del cliente'
+            },
+            ciudad: {
+              type: 'string',
+              description: 'Ciudad del cliente'
+            },
+            codigoPostal: {
+              type: 'string',
+              description: 'Código postal del cliente'
+            },
+            items: {
+              type: 'array',
+              description: 'Lista de productos en la orden',
+              items: {
+                type: 'object',
+                properties: {
+                  name: {
+                    type: 'string'
+                  },
+                  color: {
+                    type: 'string'
+                  },
+                  quantity: {
+                    type: 'number'
+                  },
+                  precio_actual: {
+                    type: 'number'
+                  }
+                }
+              }
+            },
+            total: {
+              type: 'number',
+              description: 'Total de la orden'
+            }
+          }
+        },
+        EmailResponse: {
+          type: 'object',
+          properties: {
+            success: {
+              type: 'boolean',
+              description: 'Indica si el email fue enviado exitosamente'
+            },
+            message: {
+              type: 'string',
+              description: 'Mensaje de respuesta'
+            },
+            orderNumber: {
+              type: 'string',
+              description: 'Número de orden generado'
             }
           }
         }

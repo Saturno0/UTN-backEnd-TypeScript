@@ -8,6 +8,7 @@ import { JWT_SECRET, PORT } from '../config.js';
 import { categoryRouter } from '../src/routes/categoryRoute.js';
 import { productRouter } from '../src/routes/productRoute.js';
 import { userRoute } from '../src/routes/userRoute.js';
+import { emailRoute } from '../src/routes/emailRoute.js';
 import { specs, swaggerUi } from '../src/config/swagger.js';
 
 const app = express();
@@ -43,6 +44,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
 app.use('/api/users', userRoute);
 app.use('/api/categories', categoryRouter);
 app.use('/api/products', productRouter);
+app.use('/api', emailRoute);
 
 app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`)

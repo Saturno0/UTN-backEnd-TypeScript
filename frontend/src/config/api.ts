@@ -1,4 +1,4 @@
-const DEFAULT_API_BASE_URL = 'http://localhost:3000/api';
+const DEFAULT_API_BASE_URL = 'https://utn-backend-final.onrender.com/api';
 
 const ensureLeadingSlash = (path: string): string => {
   if (!path) return '';

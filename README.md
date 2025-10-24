@@ -18,6 +18,7 @@ El frontend consume una API REST ubicada en `backend/` con arquitectura MVC y se
 - Autenticación JWT con persistencia de sesión
 - Integración completa con AWS S3 para almacenamiento de imágenes
 - Validación de datos y manejo de errores robusto
+- **Documentación API con Swagger** disponible en `/api-docs`
 
 ### Requisitos previos
 - Node.js 18.17+ (recomendado Node 20 LTS)
@@ -42,6 +43,7 @@ cd backend
 npm install
 npm run dev
 # API en http://localhost:4000
+# Documentación Swagger en http://localhost:4000/api-docs
 ```
 
 #### 3. Configuración de variables de entorno
@@ -122,25 +124,43 @@ backend/
 - Integración AWS S3 para almacenamiento de imágenes de productos
 - Validación robusta de datos con esquemas Mongoose
 - Manejo de errores centralizado en controladores
+- **Documentación interactiva con Swagger** en `/api-docs` con esquemas completos y autenticación JWT
+
+### Documentación de la API
+
+La API está completamente documentada con **Swagger** y disponible en:
+- **URL**: `http://localhost:4000/api-docs`
+- **Características**:
+  - Documentación interactiva con ejemplos
+  - Esquemas de datos completos
+  - Autenticación JWT integrada
+  - Pruebas de endpoints desde la interfaz
+  - Códigos de respuesta detallados
 
 ### API Endpoints principales
 
 #### Usuarios (`/api/users`)
-- `POST /register` - Registro de usuario
-- `POST /login` - Autenticación
-- `GET /profile` - Obtener perfil (requiere JWT)
-- `PUT /update` - Actualizar perfil (requiere JWT)
+- `POST /createUser` - Registro de usuario
+- `POST /logIn` - Autenticación
+- `GET /getUsers` - Obtener todos los usuarios (requiere JWT)
+- `PATCH /update/:id` - Actualizar usuario (requiere JWT)
+- `GET /getRol/:id` - Obtener rol de usuario
 
 #### Productos (`/api/products`)
 - `GET /getAllProducts` - Listar todos los productos
 - `GET /getProduct/:id` - Obtener producto por ID
 - `POST /createProduct` - Crear producto (requiere JWT admin)
-- `PUT /updateProduct/:id` - Actualizar producto (requiere JWT admin)
+- `POST /createProducts` - Crear múltiples productos (requiere JWT admin)
+- `PATCH /updateProduct/:id` - Actualizar producto (requiere JWT admin)
 - `DELETE /deleteProduct/:id` - Eliminar producto (requiere JWT admin)
+- `GET /getAllColors/:id` - Obtener colores de un producto
+- `GET /getAllSizes/:id` - Obtener talles de un producto
 
 #### Categorías (`/api/categories`)
-- `GET /getAllCategories` - Listar todas las categorías
+- `GET /getCategories` - Listar todas las categorías
+- `GET /getCategory/:id` - Obtener categoría por ID
 - `POST /createCategory` - Crear categoría (requiere JWT admin)
+- `POST /createCategories` - Crear múltiples categorías (requiere JWT admin)
 
 ### Características técnicas
 

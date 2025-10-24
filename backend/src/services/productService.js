@@ -105,8 +105,6 @@ export const createProductService = async (productData) => {
       throw error;
     }
   }
-  
-  productData.imageUrl = await generateSignedUrl(productData.imageUrl);
 
   // Normalize colores: ensure numeric fields and initialize per-color stock from cantidad when creating
   if (Array.isArray(productData?.colores)) {

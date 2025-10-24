@@ -8,6 +8,7 @@ import { JWT_SECRET, PORT } from '../config.js';
 import { categoryRouter } from '../src/routes/categoryRoute.js';
 import { productRouter } from '../src/routes/productRoute.js';
 import { userRoute } from '../src/routes/userRoute.js';
+import { specs, swaggerUi } from '../src/config/swagger.js';
 
 const app = express();
 
@@ -32,10 +33,18 @@ app.use(
     })
 )
 
+// Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+  explorer: true,
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: 'E-commerce API Documentation'
+}));
+
 app.use('/api/users', userRoute);
 app.use('/api/categories', categoryRouter);
 app.use('/api/products', productRouter);
 
 app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`)
+    console.log(`Swagger documentation available at http://localhost:${PORT}/api-docs`)
 })

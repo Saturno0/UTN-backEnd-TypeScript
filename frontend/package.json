@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "start": "vite preview",
     "preview": "vite preview",
+    "deploy": "npm run build && gh-pages -d dist",
     "server": "tsc -p tsconfig.server.json && node dist/server.js",
     "server:dev": "tsx src/server.ts",
     "server:build": "tsc -p tsconfig.server.json"
@@ -15,7 +17,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.0",
     "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "mysql2": "^3.14.3",
     "react": "^19.1.1",
@@ -36,6 +38,7 @@
     "eslint": "^9.33.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "gh-pages": "^6.3.0",
     "globals": "^16.3.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.4",
@@ -44,7 +47,6 @@
     "vite": "^7.1.2"
   },
   "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
-  "main": "eslint.config.js",
   "keywords": [],
   "author": "",
   "license": "ISC"

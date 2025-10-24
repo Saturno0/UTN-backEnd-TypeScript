@@ -11,7 +11,6 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
   const { loginUser, loading, error } = useLoginUser();
   const [email, setEmail] = useState("");
-  const [nombre, setnombre] = useState("");
   const [password, setPassword] = useState("");
 
   const isSubmitDisabled = useMemo(() => {
@@ -28,7 +27,7 @@ const Login: React.FC = () => {
     }
 
     const userData: LoginUserData | undefined = response.user;
-    const resolvedNombre = userData?.nombre ?? nombre;
+    const resolvedNombre = userData?.nombre ?? '';
     const resolvedEmail = userData?.email ?? email;
     const resolvedRol = userData?.rol ?? "user";
     const resolvedActivo = userData?.activo ?? true;

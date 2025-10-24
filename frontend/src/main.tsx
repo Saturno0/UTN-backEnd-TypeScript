@@ -13,7 +13,7 @@ if (container) {
   createRoot(container).render(
     <React.StrictMode>
       <Provider store={store}>
-        <BrowserRouter>
+        <BrowserRouter basename="/UTN-Frontend-Final">
           <ScrollToTop/>
           <App />
         </BrowserRouter>

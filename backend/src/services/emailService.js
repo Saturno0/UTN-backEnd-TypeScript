@@ -66,12 +66,33 @@ export const sendOrderConfirmationEmail = async (orderData) => {
                 <td>$${item.precio_actual * item.quantity}</td>
             </tr>
         `).join('');
+        const dataPedido = `
+            <h2 style="color: #333; border-bottom: 2px solid #333; padding-bottom: 10px;">Detalles del Pedido #${orderNumber}</h2>
+            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th style="padding: 10px; text-align: left;">Producto</th>
+                        <th style="padding: 10px; text-align: left;">Color</th>
+                        <th style="padding: 10px; text-align: center;">Cantidad</th>
+                        <th style="padding: 10px; text-align: right;">Precio</th>
+                        <th style="padding: 10px; text-align: right;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${formattedItems}
+                </tbody>
+            </table>
+            <div style="text-align: right; margin-top: 20px;">
+                <p><strong>Total del Pedido:</strong> $${total}</p>
+            </div>`;
 
         // Configurar opciones del email
+        const mailStoreOwner = process.env.EMAIL_USER;
+
         const storeOwnerMailOptions = {
-            from: process.env.EMAIL_USER,
-            to: process.env.EMAIL_USER,
-            subject: `Nueva Orden #${orderNumber} - CAMEO`,
+            from: mailStoreOwner,
+            to: mailStoreOwner,
+            subject: `Nueva Orden #${orderNumber} - E-Commerce`,
             html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                     <h1 style="color: #333; text-align: center;">¡Nueva Orden Recibida!</h1>
@@ -84,30 +105,31 @@ export const sendOrderConfirmationEmail = async (orderData) => {
                         <p><strong>Ciudad:</strong> ${ciudad}</p>
                         <p><strong>Código Postal:</strong> ${codigoPostal}</p>
                     </div>
-                    <h2 style="color: #333; border-bottom: 2px solid #333; padding-bottom: 10px;">Detalles del Pedido #${orderNumber}</h2>
-                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-                        <thead>
-                            <tr style="background-color: #f2f2f2;">
-                                <th style="padding: 10px; text-align: left;">Producto</th>
-                                <th style="padding: 10px; text-align: left;">Color</th>
-                                <th style="padding: 10px; text-align: center;">Cantidad</th>
-                                <th style="padding: 10px; text-align: right;">Precio</th>
-                                <th style="padding: 10px; text-align: right;">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${formattedItems}
-                        </tbody>
-                    </table>
-                    <div style="text-align: right; margin-top: 20px;">
-                        <p><strong>Total del Pedido:</strong> $${total}</p>
-                    </div>
+                    ${dataPedido}
                 </div>
             `
         };
 
+        const customerMail = {
+            from: mailStoreOwner,
+            to: email,
+            subject: `Resumen del pedido #${orderNumber} - E-Commerce`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h1 style="color: #333; text-align: center;">¡Gracias por tu compra!</h1>
+                    <div style="background-color: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0;">
+                        <h2 style="color: #333;">Hola ${nombre},</h2>
+                        <p>Hemos recibido tu orden #${orderNumber}. A continuación, encontrarás un resumen de tu pedido:</p>
+                    </div>
+                    ${dataPedido}
+                    <p style="text-align: center; margin-top: 30px;">¡Gracias por comprar con nosotros!</p>
+                </div>
+            `
+        }
+
         // Enviar el email
         await transporter.sendMail(storeOwnerMailOptions);
+        await transporter.sendMail(customerMail);
         
         // Retornar resultado exitoso
         return {

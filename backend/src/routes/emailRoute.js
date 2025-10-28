@@ -5,7 +5,7 @@ export const emailRoute = express.Router();
 
 /**
  * @swagger
- * /api/send-confirmation:
+ * /api/emial/send-confirmation:
  *   post:
  *     summary: Enviar confirmación de orden por email
  *     tags: [Email]

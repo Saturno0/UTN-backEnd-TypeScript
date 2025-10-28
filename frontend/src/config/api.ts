@@ -38,6 +38,10 @@ export const API_CONFIG = {
     GET_ROLE: '/getRol/:id',
   }),
 
+  EMAIL: createService('/email', {
+    SEND: '/send-confirmation',
+  }),
+
   CATEGORIES: createService('/categories', {
     GET_ALL: '/getCategories',
     GET_ONE: '/getCategory/:id',

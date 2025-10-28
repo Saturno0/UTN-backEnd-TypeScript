@@ -6,12 +6,14 @@ import CartItems from "./CartItems";
 import { clearCart } from "../hooks/cartSlice";
 import type { CartItem, FormData } from "../types/types";
 import type { RootState, AppDispatch } from "../hooks/store";
+import useSendEmail, { type SendEmailPayload } from "../hooks/email/useSendEmail";
 
 
 
 const Checkout: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
+  const { sendEmail } = useSendEmail();
 
   // Usamos RootState para acceder al tipado completo del store
   const cartItems = useSelector((state: RootState) => state.cart.products);
@@ -62,33 +64,22 @@ const Checkout: React.FC = () => {
       const shipping = 500;
       const finalTotal = total + shipping;
 
-      const orderData = {
+      const orderData: SendEmailPayload = {
         ...formData,
         items,
         total: finalTotal,
       };
 
-      const response = await fetch(
-        "https://utn-backend-final.onrender.com/api/send-confirmation",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(orderData),
-        }
-      );
+      const data = await sendEmail(orderData);
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (data?.success) {
         alert(
           "¡Compra realizada con éxito! En breve recibirás un mensaje para realizar el pago."
         );
         navigate("/");
         dispatch(clearCart());
       } else {
-        throw new Error(data.message);
+        throw new Error(data?.message ?? "No se pudo enviar la confirmación");
       }
     } catch (error) {
       console.error("Error:", error);

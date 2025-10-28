@@ -44,7 +44,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
 app.use('/api/users', userRoute);
 app.use('/api/categories', categoryRouter);
 app.use('/api/products', productRouter);
-app.use('/api', emailRoute);
+app.use('/api/email', emailRoute);
 
 app.listen(PORT, () => {
     console.log(`Server running at ${PORT}`)

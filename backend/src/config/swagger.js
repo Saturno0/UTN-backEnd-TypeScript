@@ -1,6 +1,13 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 
+// Determine the default server URL for Swagger
+// Prefer an explicit env var, then production default, then localhost
+const isProduction = process.env.NODE_ENV === 'production';
+const DEFAULT_SERVER_URL =
+  process.env.SWAGGER_SERVER_URL ||
+  (isProduction ? 'https://utn-backend-final.onrender.com' : 'http://localhost:4000');
+
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -14,6 +21,10 @@ const options = {
       }
     },
     servers: [
+      {
+        url: DEFAULT_SERVER_URL,
+        description: 'Servidor por defecto'
+      },
       {
         url: 'http://localhost:4000',
         description: 'Servidor de desarrollo'

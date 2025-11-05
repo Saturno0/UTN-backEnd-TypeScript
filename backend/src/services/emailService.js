@@ -1,57 +1,42 @@
 import nodemailer from 'nodemailer';
+import {
+  PORT,
+  EMAIL_USER,
+  EMAIL_PASS
+} from '../../config.js';
 
-// Configurar el transporter de nodemailer
 const createTransporter = () => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.error('Error: EMAIL_USER and EMAIL_PASS environment variables are required');
-    return null;
+    return nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: EMAIL_USER.trim(),
+    pass: EMAIL_PASS.trim(),
+  },
+});
+}
+
+export const sendContactEmail = async (orderData) => {
+  const { nombre, email, telefono, direccion, ciudad, codigoPostal, items, total } = orderData;
+
+  // Validación de datos requeridos
+  if (!nombre || !email || !telefono || !direccion || !ciudad || !codigoPostal || !items || !total) {
+    const error = new Error('Todos los campos son requeridos');
+    error.statusCode = 400;
+    throw error;
   }
 
-  const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+  // Validar el email
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // Si el email no es valido ...
+  if (!emailRegex.test(email)) {
+    const error = new Error("El formato del email no es valido");
+    error.statusCode = 400;
+    throw error;
+  }
 
-  transporter.verify((error, success) => {
-    if (error) {
-      console.error('Error verifying email configuration:', error);
-    } else {
-      console.log('Email server is ready to send messages, ', success);
-    }
-  });
-
-  return transporter;
-};
-
-export const sendOrderConfirmationEmail = async (orderData) => {
   try {
-    const { nombre, email, telefono, direccion, ciudad, codigoPostal, items, total } = orderData;
-
-    // Validación de datos requeridos
-    if (!nombre || !email || !telefono || !direccion || !ciudad || !codigoPostal || !items || !total) {
-      const error = new Error('Todos los campos son requeridos');
-      error.statusCode = 400;
-      throw error;
-    }
-
-    // Validación de formato de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      const error = new Error('El formato del email no es válido');
-      error.statusCode = 400;
-      throw error;
-    }
-
-    // Verificar configuración del transporter
+    // Ejecutamos el metodo que tiene los datos en top
     const transporter = createTransporter();
-    if (!transporter) {
-      const error = new Error('Email service not configured');
-      error.statusCode = 500;
-      throw error;
-    }
 
     // Generar número de orden único
     const orderNumber = Date.now().toString().slice(-6);
@@ -132,16 +117,18 @@ export const sendOrderConfirmationEmail = async (orderData) => {
             `,
     };
 
-    // Enviar el email
-    await transporter.sendMail(storeOwnerMailOptions);
-    await transporter.sendMail(customerMail);
+    
 
-    // Retornar resultado exitoso
+    // Enviar el email
+    const infoStoreOwner = await transporter.sendMail(storeOwnerMailOptions);
+    const infoCustomer = await transporter.sendMail(customerMail);
+
     return {
       success: true,
       message: 'Orden recibida correctamente',
       orderNumber: orderNumber,
     };
+    
   } catch (error) {
     console.error('Error in sendOrderConfirmationEmail service:', error);
 
@@ -156,4 +143,5 @@ export const sendOrderConfirmationEmail = async (orderData) => {
     throw serverError;
   }
 };
+
 

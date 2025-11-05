@@ -1,85 +1,74 @@
 # Backend - E-commerce API
 
-Este es el backend de la aplicación de e-commerce desarrollado con Node.js, Express y MongoDB. Proporciona una API RESTful completa para la gestión de usuarios, productos, categorías y manejo de imágenes.
+Backend de e-commerce desarrollado con Node.js, Express y MongoDB. Expone una API RESTful para la gestión de usuarios, productos, categorías, envío de emails y manejo de imágenes en S3. Incluye documentación Swagger.
 
-## 🚀 Características Principales
+## Características Principales
 
-- **API RESTful** completa con documentación Swagger
-- **Autenticación JWT** para usuarios
-- **Gestión de productos** con colores, tallas y stock
-- **Sistema de categorías** para organización de productos
-- **Subida de imágenes** a AWS S3 con URLs firmadas
-- **Validación de datos** robusta
-- **Middleware de seguridad** para rutas protegidas
+- API RESTful con documentación Swagger
+- Autenticación JWT para usuarios
+- Gestión de productos (colores, talles y stock)
+- Sistema de categorías
+- Subida y gestión de imágenes en AWS S3 (URLs firmadas)
+- Validación robusta y middlewares de seguridad
 
-## 📦 Dependencias Principales
+## Dependencias Principales
 
-### Dependencias de Producción
-- **express** (^5.1.0) - Framework web para Node.js
-- **mongoose** (^8.18.1) - ODM para MongoDB
-- **mongodb** (^6.19.0) - Driver oficial de MongoDB
-- **jsonwebtoken** (^9.0.2) - Generación y verificación de tokens JWT
-- **bcrypt** (^6.0.0) - Encriptación de contraseñas
-- **cors** (^2.8.5) - Configuración de CORS
-- **express-session** (^1.18.2) - Manejo de sesiones
-- **body-parser** (^2.2.0) - Parsing de datos del cuerpo de las peticiones
-- **multer** (^2.0.2) - Manejo de archivos multipart/form-data
-- **sharp** (^0.34.4) - Procesamiento de imágenes
-- **nodemailer** (^6.10.1) - Envío de emails
-- **@aws-sdk/client-s3** (^3.914.0) - Cliente AWS S3
-- **@aws-sdk/s3-request-presigner** (^3.913.0) - Generación de URLs firmadas para S3
-- **swagger-jsdoc** (^6.2.8) - Documentación automática de API
-- **swagger-ui-express** (^5.0.1) - Interfaz web para Swagger
+- express, cors, body-parser, express-session
+- mongoose, mongodb
+- jsonwebtoken, bcrypt
+- multer, sharp
+- @aws-sdk/client-s3, @aws-sdk/s3-request-presigner
+- swagger-jsdoc, swagger-ui-express
+- nodemailer
 
-### Dependencias de Desarrollo
-- **dotenv** (^17.2.2) - Variables de entorno
-- **nodemon** (^3.1.10) - Reinicio automático del servidor
-- **npm-check-updates** (^18.1.0) - Actualización de dependencias
+Desarrollo: dotenv, nodemon, npm-check-updates
 
-## 🏗️ Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 backend/
-├── api/
-│   └── index.js                 # Punto de entrada principal del servidor
-├── src/
-│   ├── config/
-│   │   ├── aws.js              # Configuración de AWS S3
-│   │   └── swagger.js          # Configuración de Swagger
-│   ├── controllers/
-│   │   ├── categoryController.js # Controladores de categorías
-│   │   ├── productController.js  # Controladores de productos
-│   │   └── userController.js     # Controladores de usuarios
-│   ├── middlewares/
-│   │   ├── uploadMiddleware.js   # Middleware para subida de archivos
-│   │   └── verifyTokemMiddleware.js # Middleware de verificación JWT
-│   ├── models/
-│   │   ├── Category.js          # Modelo de categorías (Mongoose)
-│   │   ├── Product.js           # Modelo de productos (Mongoose)
-│   │   └── User.js              # Modelo de usuarios (Mongoose)
-│   ├── routes/
-│   │   ├── categoryRoute.js     # Rutas de categorías
-│   │   ├── productRoute.js      # Rutas de productos
-│   │   └── userRoute.js         # Rutas de usuarios
-│   ├── services/
-│   │   ├── categoryService.js   # Lógica de negocio de categorías
-│   │   ├── imageService.js      # Servicios de manejo de imágenes
-│   │   ├── productService.js    # Lógica de negocio de productos
-│   │   └── userService.js       # Lógica de negocio de usuarios
-│   └── utils/
-│       ├── helpers.js           # Funciones auxiliares
-│       └── validator.js          # Validadores personalizados
-├── config.js                    # Configuración de variables de entorno
-├── db.js                       # Conexión a la base de datos
-├── package.json                # Dependencias y scripts
-└── env.model                   # Modelo de variables de entorno
+├─ api/
+│  └─ index.js               # Punto de entrada del servidor
+├─ src/
+│  ├─ config/
+│  │  ├─ aws.js              # Configuración AWS S3
+│  │  └─ swagger.js          # Configuración Swagger
+│  ├─ controllers/
+│  │  ├─ categoryController.js
+│  │  ├─ productController.js
+│  │  └─ userController.js
+│  ├─ middlewares/
+│  │  ├─ uploadMiddleware.js
+│  │  └─ verifyTokemMiddleware.js
+│  ├─ models/
+│  │  ├─ Category.js
+│  │  ├─ Product.js
+│  │  └─ User.js
+│  ├─ routes/
+│  │  ├─ categoryRoute.js
+│  │  ├─ productRoute.js
+│  │  ├─ userRoute.js
+│  │  └─ emailRoute.js
+│  └─ services/
+│     ├─ categoryService.js
+│     ├─ imageService.js
+│     ├─ productService.js
+│     └─ emailService.js
+├─ config.js                  # Variables de entorno
+├─ db.js                      # Conexión a la base de datos
+├─ package.json
+└─ env.model
 ```
 
-## 🔧 Configuración
+## Configuración
 
-### Variables de Entorno
+Crear el archivo de entorno a partir del ejemplo:
 
-Crear un archivo `.env` basado en `env.model`:
+```bash
+cp .env.example .env
+```
+
+Variables disponibles (placeholders en `.env.example`):
 
 ```env
 PORT=3000
@@ -98,212 +87,270 @@ EMAIL_USER=tu_email@gmail.com
 EMAIL_PASS=tu_app_password
 ```
 
-### Instalación
+## Instalación
 
 ```bash
-# Instalar dependencias
-npm install
-
-# Ejecutar en modo desarrollo
-npm run dev
-
-# Ejecutar en producción
-npm start
+npm install        # Instala dependencias
+npm run dev        # Modo desarrollo
+npm start          # Producción
 ```
 
-## 📚 Servicios y Funcionalidades
+## Modelos de Base de Datos
 
-### 🔐 Servicio de Usuarios (`userService.js`)
-
-**Funciones principales:**
-- `createUserService(userData)` - Crear nuevo usuario con validación de email único
-- `getUsersService()` - Obtener todos los usuarios
-- `logIn(email, password)` - Autenticación con JWT y verificación de contraseña encriptada
-- `updateUserService(idUser, updateData)` - Actualizar datos de usuario
-- `getRolService(idUser)` - Obtener rol de usuario específico
-
-**Características:**
-- Encriptación de contraseñas con bcrypt
-- Generación de tokens JWT con expiración de 1 hora
-- Validación de usuarios existentes
-- Manejo seguro de datos sensibles
-
-### 🛍️ Servicio de Productos (`productService.js`)
-
-**Funciones principales:**
-- `getAllProductsService()` - Obtener todos los productos con categorías pobladas
-- `getProductByIdService(id)` - Obtener producto específico por ID
-- `createProductService(productData)` - Crear nuevo producto con validaciones
-- `updateProductService(productId, updateData)` - Actualizar producto existente
-- `deleteProductService(id)` - Eliminar producto y su imagen de S3
-- `getAllColorsByProductService(idProduct)` - Obtener colores de un producto
-- `getAllSizesByProductService(idProduct)` - Obtener tallas de un producto
-
-**Características:**
-- Gestión de stock por color
-- Validación de colores duplicados
-- Integración con categorías
-- Eliminación automática de imágenes de S3
-- Formateo de datos para frontend
-
-### 📂 Servicio de Categorías (`categoryService.js`)
-
-**Funciones principales:**
-- `getCategoriesService()` - Obtener todas las categorías
-- `getCategoryService(id)` - Obtener categoría específica
-- `createCategoryService(categoryData)` - Crear nueva categoría
-- `createCategoriesService(categoriesData)` - Crear múltiples categorías
-- `findCategoryByName(name)` - Buscar categoría por nombre
-
-**Características:**
-- Validación de nombres únicos
-- Creación masiva de categorías
-- Integración con productos
-
-### 🖼️ Servicio de Imágenes (`imageService.js`)
-
-**Funciones principales:**
-- `deleteImageFromS3(imageUrl)` - Eliminar imagen de AWS S3
-- `generateSignedUrl(imageUrl, expiresIn)` - Generar URL firmada para acceso temporal
-
-**Características:**
-- Integración completa con AWS S3
-- URLs firmadas con expiración configurable
-- Manejo seguro de eliminación de archivos
-- Extracción automática de keys de URLs
-
-### 📧 Servicio de Email (`emailService.js`)
-
-**Funciones principales:**
-- `sendOrderConfirmationEmail(orderData)` - Enviar confirmación de orden por email
-
-**Características:**
-- Integración con Nodemailer y Gmail
-- Plantillas HTML para emails profesionales
-- Validación de datos de entrada
-- Generación automática de números de orden
-- Envío de confirmaciones tanto al cliente como al administrador
-
-## 🛡️ Middlewares
-
-### `verifyTokemMiddleware.js`
-- Verificación de tokens JWT
-- Validación de headers de autorización
-- Manejo de errores de autenticación
-
-### `uploadMiddleware.js`
-- Configuración de Multer para subida de archivos
-- Validación de tipos de archivo
-- Procesamiento de imágenes con Sharp
-
-## 🗄️ Modelos de Base de Datos
-
-### User Model
+### User
 ```javascript
 {
   nombre: String,
-  email: String (único),
-  password: String (encriptado),
-  rol: String (default: "user"),
-  activo: Boolean (default: true)
+  email: String, // único
+  password: String, // encriptado
+  rol: String, // default: "user"
+  activo: Boolean // default: true
 }
 ```
 
-### Product Model
+### Product
 ```javascript
 {
   name: String,
+  calificacion: Number,            // 0..5 (default 0)
+  opiniones: Number,               // >= 0 (default 0)
   description: String,
-  price: Number,
-  category: ObjectId (ref: Category),
-  colores: [{
-    name: String,
-    cantidad: Number,
-    stock: Number
-  }],
-  talles: [String],
-  imageUrl: String,
-  stock: Boolean
+  stock: Boolean,                  // default: true
+  descuento: Number,               // 0..100 (default 0)
+  precio_actual: Number,           // requerido
+  precio_original: Number,         // requerido
+  talles: ["XS","S","M","L","XL","XXL"],
+  estado: "Activo" | "Inactivo", // default: "Activo"
+  especificaciones: {
+    material: String,
+    peso: String,
+    fabricado_en: String
+  },
+  category: ObjectId,              // ref: Category, requerido
+  colores: [{ name: String, stock: Number }],
+  ingreso: "nuevo" | "viejo",     // default: "nuevo"
+  imageUrl: String | null          // URL S3 válida o null
 }
 ```
 
-### Category Model
+### Category
 ```javascript
 {
-  nombre: String (único),
-  description: String
+  nombre: String,     // único
+  descripcion: String
 }
 ```
 
-## 🌐 API Endpoints
+## Endpoints y Verbos HTTP
+
+Prefijo base: `/api`
 
 ### Usuarios (`/api/users`)
-- `POST /createUser` - Crear usuario
-- `GET /getUsers` - Obtener todos los usuarios
-- `POST /logIn` - Iniciar sesión
-- `PUT /update/:id` - Actualizar usuario
-- `GET /getRol/:id` - Obtener rol de usuario
+- POST `/createUser` — Crear usuario
+- GET `/getUsers` — Listar usuarios
+- POST `/logIn` — Inicio de sesión (JWT)
+- PATCH `/update/:id` — Actualizar usuario
+- GET `/getRol/:id` — Obtener rol
 
 ### Productos (`/api/products`)
-- `GET /getAllProducts` - Obtener todos los productos
-- `GET /getProduct/:id` - Obtener producto por ID
-- `POST /createProduct` - Crear producto
-- `POST /createProducts` - Crear múltiples productos
-- `PUT /updateProduct/:id` - Actualizar producto
-- `DELETE /deleteProduct/:id` - Eliminar producto
+- GET `/getAllProducts` — Listar productos
+- GET `/getProduct/:id` — Obtener producto por ID
+- POST `/createProducts` — Crear múltiples productos
+- PATCH `/updateProduct/:id` — Actualizar producto
+- DELETE `/deleteProduct/:id` — Eliminar producto
+- GET `/getAllColors/:id` — Colores del producto
+- GET `/getAllSizes/:id` — Talles del producto
 
 ### Categorías (`/api/categories`)
-- `GET /getCategories` - Obtener todas las categorías
-- `GET /getCategory/:id` - Obtener categoría por ID
-- `POST /createCategory` - Crear categoría
-- `POST /createCategories` - Crear múltiples categorías
+- GET `/getCategories` — Listar categorías
+- GET `/getCategory/:id` — Obtener categoría
+- POST `/createCategory` — Crear categoría
+- POST `/createCategories` — Crear múltiples categorías
 
-### Email (`/api`)
-- `POST /send-confirmation` - Enviar confirmación de orden por email
+### Email (`/api/email`)
+- POST `/send-confirmation` — Enviar confirmación de orden por email
 
-## 📖 Documentación API
+## Servicio de Email
 
-La documentación completa de la API está disponible en:
+- Función: `sendOrderConfirmationEmail(orderData)`
+- Valida datos de entrada, genera número de orden y envía dos correos:
+  - Al administrador (resumen completo)
+  - Al cliente (confirmación y detalle)
+- Requiere variables `EMAIL_USER` y `EMAIL_PASS`
+
+## Swagger
+
+- UI: `GET /api-docs`
+- Incluye especificaciones generadas por `swagger-jsdoc` a partir de anotaciones JSDoc en rutas (p. ej., `src/routes/emailRoute.js`).
+
+## Ejemplos de Datos Mock (JSON)
+
+### Usuarios
+
+Solicitud: crear usuario (`POST /api/users/createUser`)
+```json
+{
+  "nombre": "Laura Pérez",
+  "email": "laura@example.com",
+  "password": "Secreta123!",
+  "rol": "user"
+}
 ```
-https://utn-backend-final.onrender.com/api-docs
+
+Solicitud: login (`POST /api/users/logIn`)
+```json
+{
+  "email": "laura@example.com",
+  "password": "Secreta123!"
+}
 ```
 
-Utiliza Swagger UI para una interfaz interactiva donde puedes probar todos los endpoints.
-
-## 🔒 Seguridad
-
-- **Autenticación JWT** con tokens de 1 hora de duración
-- **Encriptación de contraseñas** con bcrypt
-- **CORS configurado** para dominios específicos
-- **Validación de datos** en todos los endpoints
-- **Middleware de autenticación** para rutas protegidas
-- **Manejo seguro de archivos** con AWS S3
-
-## 🚀 Scripts Disponibles
-
-```bash
-npm start    # Ejecutar en producción
-npm run dev  # Ejecutar en desarrollo con nodemon
-npm test     # Ejecutar pruebas (no implementado)
+Solicitud: actualizar usuario (`PATCH /api/users/update/665fa2e9c5a2f0a9b4f0d1a1`)
+```json
+{
+  "nombre": "Laura P.",
+  "rol": "admin",
+  "activo": true
+}
 ```
 
-## 🔧 Tecnologías Utilizadas
+Respuesta (ejemplo genérico)
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "665fa2e9c5a2f0a9b4f0d1a1",
+    "nombre": "Laura Pérez",
+    "email": "laura@example.com",
+    "rol": "user",
+    "activo": true
+  }
+}
+```
 
-- **Node.js** - Runtime de JavaScript
-- **Express.js** - Framework web
-- **MongoDB** - Base de datos NoSQL
-- **Mongoose** - ODM para MongoDB
-- **JWT** - Autenticación basada en tokens
-- **AWS S3** - Almacenamiento de archivos
-- **Swagger** - Documentación de API
-- **Sharp** - Procesamiento de imágenes
-- **Multer** - Manejo de archivos multipart
+### Categorías
 
-## 📝 Notas de Desarrollo
+Solicitud: crear categoría (`POST /api/categories/createCategory`)
+```json
+{
+  "nombre": "Zapatillas",
+  "description": "Calzado deportivo"
+}
+```
 
-- El proyecto utiliza **ES Modules** (import/export)
-- Las contraseñas se encriptan con **bcrypt** con salt rounds de 10
-- Los tokens JWT expiran en **1 hora**
-- Las imágenes se almacenan en **AWS S3** con URLs firmadas
-- La documentación se genera automáticamente con **Swagger**
-- El servidor se reinicia automáticamente en desarrollo con **nodemon**
+Solicitud: crear múltiples categorías (`POST /api/categories/createCategories`)
+```json
+[
+  { "nombre": "Remeras", "description": "Prendas superiores" },
+  { "nombre": "Pantalones", "description": "Prendas inferiores" },
+  { "nombre": "Accesorios", "description": "Gorros, medias, etc." }
+]
+```
+
+### Productos
+
+Solicitud: crear múltiples productos (`POST /api/products/createProducts`)
+```json
+{
+  "products": [
+    {
+      "name": "Zapatilla Runner Pro",
+      "description": "Zapatilla liviana para running",
+      "precio_actual": 79999.99,
+      "precio_original": 99999.99,
+      "category": "6775f2e8c5a2f0a9b4f0d1a1",
+      "talles": ["M", "L"],
+      "colores": [
+        { "name": "Negro", "stock": 10 },
+        { "name": "Blanco", "stock": 5 }
+      ],
+      "especificaciones": { "material": "Sintético", "peso": "250g", "fabricado_en": "AR" },
+      "estado": "Activo",
+      "ingreso": "nuevo",
+      "imageUrl": "https://s3.amazonaws.com/mi-bucket/products/runner-pro.jpg"
+    }
+  ]
+}
+```
+
+Solicitud: actualizar producto (`PUT /api/products/updateProduct/665fa3f0c5a2f0a9b4f0d1b2`)
+```json
+{
+  "price": 74999.99,
+  "stock": true,
+  "colores": [
+    { "name": "Rojo", "cantidad": 3, "stock": 3 }
+  ]
+}
+```
+
+Respuesta: colores por producto (`GET /api/products/:id/colors`)
+```json
+[
+  { "name": "Negro", "cantidad": 10, "stock": 10 },
+  { "name": "Blanco", "cantidad": 5, "stock": 5 }
+]
+```
+
+Respuesta: talles por producto (`GET /api/products/:id/sizes`)
+```json
+["39", "40", "41", "42"]
+```
+
+### Email
+
+Solicitud: enviar confirmación de pedido (`POST /api/email/send-confirmation`)
+```json
+{
+  "nombre": "Laura Pérez",
+  "email": "laura@example.com",
+  "telefono": "+54 9 11 5555-5555",
+  "direccion": "Av. Siempre Viva 742",
+  "ciudad": "Buenos Aires",
+  "codigoPostal": "1000",
+  "items": [
+    { "name": "Zapatilla Runner Pro", "color": "Negro", "quantity": 2, "precio_actual": 79999.99 },
+    { "name": "Remera Tech", "color": "Azul", "quantity": 1, "precio_actual": 19999.99 }
+  ],
+  "total": 179999.97
+}
+```
+
+Respuesta (exitosa)
+```json
+{
+  "success": true,
+  "message": "Orden recibida correctamente",
+  "orderNumber": "123456"
+}
+```
+
+Respuesta (error de validación)
+```json
+{
+  "success": false,
+  "message": "Todos los campos son requeridos"
+}
+```
+
+### Imágenes (servicio interno)
+
+Entrada: eliminar imagen de S3
+```json
+{
+  "imageUrl": "https://s3.amazonaws.com/mi-bucket/products/runner-pro.jpg"
+}
+```
+
+Entrada: generar URL firmada
+```json
+{
+  "imageUrl": "https://s3.amazonaws.com/mi-bucket/products/runner-pro.jpg",
+  "expiresIn": 900
+}
+```
+
+## Notas
+
+- Archivo guardado en UTF-8 para evitar problemas de acentuación.
+- Endpoint de email aclarado: `POST /api/email/send-confirmation`.

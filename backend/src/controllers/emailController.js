@@ -1,8 +1,8 @@
-import { sendOrderConfirmationEmail } from "../services/emailService.js";
+import { sendContactEmail } from "../services/emailService.js";
 
 export const sendConfirmation = async (req, res) => {
     try {
-        const result = await sendOrderConfirmationEmail(req.body);
+        const result = await sendContactEmail(req.body);
         res.json(result);
     } catch (error) {
         console.error('Error in sendConfirmation controller:', error);

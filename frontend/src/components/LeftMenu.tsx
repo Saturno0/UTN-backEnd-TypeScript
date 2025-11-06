@@ -41,9 +41,6 @@ const LeftMenu: React.FC<LeftMenuProps> = ({
               <h3>Nuevo ingreso</h3>
             </Link>
           </li>
-          <li className="links">
-            <h3>Mas vendidos</h3>
-          </li>
           {menuOpen && (
             <>
               <li onClick={() => navigate("/create-product")}>

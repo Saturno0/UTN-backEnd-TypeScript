@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { register } from "../hooks/userSlice";
+import { register, logout } from "../hooks/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../hooks/store";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -31,6 +32,12 @@ const Profile = () => {
   const handleSave = () => {
     dispatch(register(formData)); // actualiza redux y localStorage
     setIsEditing(false);
+  };
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(logout());
+    setIsEditing(false);
+    navigate("/");
   };
 
   return (
@@ -86,6 +93,7 @@ const Profile = () => {
         ) : (
           <button onClick={() => setIsEditing(true)}>Editar Perfil</button>
         )}
+        <button onClick={handleLogout}>Cerrar sesión</button>
       </div>
     </div>
   );

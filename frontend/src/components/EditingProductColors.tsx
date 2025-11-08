@@ -1,5 +1,5 @@
-import React from 'react';
-import type { Product, ProductColor } from '../types/types';
+import React from "react";
+import type { Product, ProductColor } from "../types/types";
 
 // Nota: El nombre de la interface se solicita exactamente como "EditingProductColorsProps"
 export interface EditingProductColorsProps {
@@ -48,93 +48,156 @@ const EditingProductColors: React.FC<EditingProductColorsProps> = ({
   handleSaveAll,
   isSavingAll,
 }) => {
+  if (!isAdmin || !productId) {
+    return null;
+  }
+
+  const handleToggleColors = () => {
+    setIsEditingColors((prev) => !prev);
+    setEditError(null);
+    if (!isEditingColors && Array.isArray(currentProduct.colores)) {
+      setEditableColors(currentProduct.colores);
+    }
+  };
+
   return (
-    <>
-      {isAdmin && productId && (
-        <section className="product-colors-editor">
+    <section className="product-editor-panel">
+      <header className="product-editor-panel__header">
+        <div>
+          <p className="product-editor-eyebrow">Gestión administrativa</p>
+          <h3>Colores e inventario</h3>
+          <p className="product-editor-description">
+            Controlá el stock por color y guardá todos los cambios de una sola vez.
+          </p>
+        </div>
+        <div className="product-editor-panel__actions">
           <button
             type="button"
-            onClick={() => {
-              setIsEditingColors((prev) => !prev);
-              setEditError(null);
-              if (!isEditingColors && Array.isArray(currentProduct.colores)) {
-                setEditableColors(currentProduct.colores);
-              }
-            }}
+            className="product-editor-btn product-editor-btn--ghost"
+            onClick={() => setIsEditingInfo((prev) => !prev)}
           >
-            {isEditingColors ? 'Cancelar edición' : 'Editar colores'}
+            {isEditingInfo ? "Cerrar editor" : "Editar información"}
           </button>
+          <button
+            type="button"
+            className="product-editor-btn product-editor-btn--primary"
+            onClick={handleSaveAll}
+            disabled={isSavingAll}
+          >
+            {isSavingAll ? "Guardando..." : "Guardar todo"}
+          </button>
+        </div>
+      </header>
 
-          {isEditingColors && (
-            <div className="color-editor">
+      <div className="product-editor-card">
+        <div className="product-editor-card__header">
+          <div>
+            <h4>Inventario por color</h4>
+            <p className="product-editor-description">
+              Definí el nombre de los colores disponibles y stocks mínimos por variante.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="product-editor-btn product-editor-btn--secondary"
+            onClick={handleToggleColors}
+          >
+            {isEditingColors ? "Cancelar edición" : "Editar colores"}
+          </button>
+        </div>
+
+        {isEditingColors ? (
+          <>
+            <div className="color-editor-rows">
               {editableColors.map((color, index) => (
-                <div className="color-editor-row" key={index}>
-                  <label>
-                    Nombre del color
+                <div className="color-editor-row" key={`${color.name}-${index}`}>
+                  <div className="product-editor-field">
+                    <label htmlFor={`color-name-${index}`}>Nombre del color</label>
                     <input
+                      id={`color-name-${index}`}
                       type="text"
                       value={color.name}
-                      onChange={(e) => handleColorFieldChange(index, 'name', e.target.value)}
-                      placeholder="Nombre del color"
+                      onChange={(e) =>
+                        handleColorFieldChange(index, "name", e.target.value)
+                      }
+                      placeholder="Ej: Negro carbón"
                     />
-                  </label>
-                  <label>
-                    Cantidad
+                  </div>
+                  <div className="product-editor-field">
+                    <label htmlFor={`color-qty-${index}`}>Cantidad</label>
                     <input
+                      id={`color-qty-${index}`}
                       type="number"
                       min={0}
                       value={color.cantidad}
-                      onChange={(e) => handleColorFieldChange(index, 'cantidad', e.target.value)}
-                      placeholder="Cantidad"
+                      onChange={(e) =>
+                        handleColorFieldChange(index, "cantidad", e.target.value)
+                      }
+                      placeholder="0"
                     />
-                  </label>
-                  <label>
-                    Stock disponible
+                  </div>
+                  <div className="product-editor-field">
+                    <label htmlFor={`color-stock-${index}`}>Stock disponible</label>
                     <input
+                      id={`color-stock-${index}`}
                       type="number"
                       min={0}
                       value={color.stock}
-                      onChange={(e) => handleColorFieldChange(index, 'stock', e.target.value)}
-                      placeholder="Stock"
+                      onChange={(e) =>
+                        handleColorFieldChange(index, "stock", e.target.value)
+                      }
+                      placeholder="0"
                     />
-                  </label>
+                  </div>
                   <button
                     type="button"
+                    className="product-editor-icon-btn"
                     onClick={() => handleRemoveColorRow(index)}
+                    aria-label="Eliminar color"
                   >
-                    Eliminar
+                    ×
                   </button>
                 </div>
               ))}
+            </div>
 
-              <button type="button" onClick={handleAddColorRow}>
-                Agregar color
-              </button>
-
-              {editError && <p className="error-message">{editError}</p>}
-
+            <div className="product-editor-inline-actions">
               <button
                 type="button"
+                className="product-editor-btn product-editor-btn--ghost"
+                onClick={handleAddColorRow}
+              >
+                Agregar color
+              </button>
+              <button
+                type="button"
+                className="product-editor-btn product-editor-btn--primary"
                 onClick={handleSaveColors}
                 disabled={isSavingColors}
               >
-                {isSavingColors ? 'Guardando...' : 'Guardar cambios'}
+                {isSavingColors ? "Guardando..." : "Guardar cambios"}
               </button>
             </div>
-          )}
-        </section>
-      )}
-      {isAdmin && (
-        <section className="product-info-actions">
-          <button type="button" onClick={() => setIsEditingInfo((prev) => !prev)}>
-            {isEditingInfo ? 'Cancelar edición' : 'Editar producto'}
-          </button>
-          <button type="button" onClick={handleSaveAll} disabled={isSavingAll}>
-            {isSavingAll ? 'Guardando...' : 'Guardar todo'}
-          </button>
-        </section>
-      )}
-    </>
+
+            {editError && (
+              <div className="product-editor-alert product-editor-alert--error">
+                {editError}
+              </div>
+            )}
+          </>
+        ) : (
+          <ul className="product-editor-summary">
+            {Array.isArray(currentProduct.colores) &&
+              currentProduct.colores.map((color) => (
+                <li key={color.name}>
+                  <span>{color.name}</span>
+                  <span>{color.stock ?? 0} en stock</span>
+                </li>
+              ))}
+          </ul>
+        )}
+      </div>
+    </section>
   );
 };
 

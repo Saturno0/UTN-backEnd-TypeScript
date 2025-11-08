@@ -72,7 +72,7 @@ const Login: React.FC = () => {
           required
         />
 
-        {error && <p className="login-error">{error}</p>}
+        {error && <p className="login-error">La contraseña o el corre electronico no es correcto</p>}
 
         <button className="login-button" type="submit" disabled={isSubmitDisabled}>
           {loading ? "Ingresando..." : "Iniciar sesión"}

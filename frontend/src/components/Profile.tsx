@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { register, logout } from "../hooks/userSlice";
+import { logout, register } from "../hooks/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../hooks/store";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +24,13 @@ const Profile = () => {
     });
   }, [user]);
 
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    dispatch(logout());
+    setIsEditing(false);
+    navigate('/login');
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -32,12 +39,6 @@ const Profile = () => {
   const handleSave = () => {
     dispatch(register(formData)); // actualiza redux y localStorage
     setIsEditing(false);
-  };
-  const navigate = useNavigate();
-  const handleLogout = () => {
-    dispatch(logout());
-    setIsEditing(false);
-    navigate("/");
   };
 
   return (
@@ -91,7 +92,10 @@ const Profile = () => {
             <button onClick={() => setIsEditing(false)}>Cancelar</button>
           </>
         ) : (
-          <button onClick={() => setIsEditing(true)}>Editar Perfil</button>
+          <>
+            <button onClick={() => setIsEditing(true)}>Editar Perfil</button>
+            <button onClick={handleLogout}>Cerrar sesion</button>
+          </>
         )}
         <button onClick={handleLogout}>Cerrar sesión</button>
       </div>
